@@ -1,0 +1,117 @@
+---
+/**
+ * English SRL page. Not a translation of the Romanian one — the audience is
+ * different, so the content is too.
+ *
+ * A Romanian reader wants to know what the monthly service includes. A
+ * foreign owner mostly wants to know how the Romanian system differs from
+ * the one they know: what a microîntreprindere is, why VAT registration is
+ * not automatic, and who is liable if a filing is late. "Ploiești" stays out
+ * of the title and H1 here — an English searcher looking for this is
+ * searching by country, not by city.
+ */
+import ServiceLayout from '@layouts/ServiceLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+---
+
+<ServiceLayout service="srl" serviceType="Financial accounting">
+  <p class="lede">
+    We keep the books for Romanian limited companies (SRL) in Ploiești and Prahova,
+    including foreign-owned ones. Filings go to the Romanian tax authority in Romanian;
+    your reporting and our correspondence with you are in English.
+  </p>
+
+  <p>
+    Most owners who come to us from another country are not looking for a different
+    service — they are looking to understand what the Romanian system requires of them.
+    The sections below cover the parts that usually differ from what people expect.
+  </p>
+
+  <h2>What the monthly service covers</h2>
+
+  <ul>
+    <li>Recording of all source documents: sales and purchase invoices, receipts, bank statements, expense claims</li>
+    <li>Statutory registers — journal, inventory register and general ledger</li>
+    <li>Corporate income tax, or micro-company turnover tax, depending on which regime applies</li>
+    <li>Fixed asset register and depreciation</li>
+    <li>Filing through SPV, the tax authority's electronic portal</li>
+    <li>A monthly trial balance and a short statement of what is payable and when</li>
+    <li>Handling notices and information requests from ANAF</li>
+  </ul>
+
+  <h2>Two tax regimes, and the choice is not permanent</h2>
+
+  <p>
+    A Romanian SRL is taxed either as a micro-company, on turnover, or at the standard
+    corporate income tax rate on profit. The micro-company regime applies below a
+    turnover threshold of <Tbd label="micro-company turnover threshold" /> and has
+    conditions attached — including <Tbd label="micro-company conditions, e.g. employee requirement" />.
+  </p>
+
+  <p>
+    A company that exceeds the threshold moves to profit taxation from
+    <Tbd label="point at which the regime changes" />. This is worth modelling before
+    incorporation rather than after: the two regimes produce materially different tax
+    bills at the same revenue, and the more profitable the company, the more the
+    difference matters.
+  </p>
+
+  <h2>VAT registration is separate from incorporation</h2>
+
+  <p>
+    Registering a company does not register it for VAT. A new SRL starts outside the VAT
+    system and must register once turnover passes <Tbd label="VAT registration threshold" />,
+    within <Tbd label="deadline to register after exceeding threshold" /> of exceeding it.
+    Miss that and VAT is owed retroactively from the date the threshold was crossed, plus
+    <Tbd label="late registration penalties" />.
+  </p>
+
+  <p>
+    Voluntary registration before the threshold is possible and is often the right call
+    for a company that buys heavily from Romanian VAT-registered suppliers, or that sells
+    business-to-business. If your company trades within the EU, registration also brings
+    the recapitulative statement and an EU VAT number into scope.
+  </p>
+
+  <h2>The director is personally exposed</h2>
+
+  <p>
+    Under Romanian law the administrator carries personal responsibility for the
+    company's tax obligations being met, and that responsibility does not transfer to the
+    accountant. It is the single point most foreign owners are surprised by. In practice
+    it means two things: filings must go in on time even in a month when the company did
+    nothing, and you should be able to see what was filed on your behalf.
+  </p>
+
+  <p>
+    We send a monthly summary of what was submitted and what was paid, in English, so
+    there is a record you can actually read.
+  </p>
+
+  <h2>Electronic invoicing is mandatory</h2>
+
+  <p>
+    Romania requires invoices to be issued through RO e-Factura, the national e-invoicing
+    system, and received through SPV. This is not optional and applies to foreign-owned
+    companies on the same terms. It is explained in full on our
+    <a href="/en/services/e-invoicing-spv">e-Factura and SPV page</a>.
+  </p>
+
+  <h2>Taking over from your current accountant</h2>
+
+  <p>
+    We take over in <Tbd label="handover duration" /> without interrupting trading. We
+    request the trial balance, the statutory registers and the last filed annual accounts
+    from your current accountant, reconcile the opening balances and continue from there.
+    You will need to grant us access in SPV or issue a power of attorney for filing.
+  </p>
+
+  <h2>Fees</h2>
+
+  <p>
+    From <Tbd label="monthly fee, non-VAT-registered" /> per month for a company outside
+    the VAT system and from <Tbd label="monthly fee, VAT-registered" /> per month for a
+    VAT-registered one. The figure depends on document volume, headcount and the number
+    of bank accounts. We quote a firm price after seeing the volume, not before.
+  </p>
+</ServiceLayout>

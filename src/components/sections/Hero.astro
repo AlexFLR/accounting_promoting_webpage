@@ -1,0 +1,147 @@
+---
+import { getLangFromUrl, useTranslations, pathFor } from '@i18n/utils';
+import AnimatedHeadline from '@components/ui/AnimatedHeadline.astro';
+import { site } from '@/data/site';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+{/* data-under-header: this section's background runs to the top of the
+    viewport, with the island floating over it. */}
+<section id="inceput" class="hero snap-section" data-section-theme="paper" data-snap-section data-under-header>
+  <div class="container hero__content">
+    <div data-reveal><AnimatedHeadline text={t('hero.title')} /></div>
+    <p class="hero__subtitle" data-reveal style="--reveal-i:1">{t('hero.subtitle')}</p>
+    <div class="hero__actions" data-reveal style="--reveal-i:2">
+      <a class="button button--primary" href={pathFor('contact', lang)}>{t('nav.cta')}</a>
+      <a class="button button--ghost" href={pathFor('services', lang)}>{t('nav.services')}</a>
+    </div>
+
+    {/* The three facts a first-time visitor needs and the headline cannot
+        carry: that the firm is licensed, that it is local to them, and how
+        to reach a person without filling in a form. Deliberately quiet —
+        it is credentials, not a second call to action. */}
+    <ul class="hero__facts" data-reveal style="--reveal-i:3">
+      <li>{t('home.ceccar')}</li>
+      <li>{t('home.area')}</li>
+      <li>
+        <a href={site.phoneHref}>{site.phone}</a>
+      </li>
+    </ul>
+  </div>
+
+</section>
+
+<style>
+  /**
+   * The hero owns the whole first screen — nothing from the next entry
+   * shares it.
+   *
+   * `dvh`, not `vh`: on mobile `100vh` is the viewport with browser chrome
+   * *retracted*, so a `100vh` hero is taller than what you can actually see
+   * on arrival and the next section peeks in anyway — the exact problem this
+   * is meant to fix. `dvh` tracks the visible viewport.
+   *
+   * `min-height`, not `height`, so a long headline or a short landscape
+   * screen grows the section instead of overflowing it.
+   */
+  .hero {
+    display: grid;
+    /* Sits in the upper part of the screen rather than dead-centre. The
+       padding is the one value to tune if it wants to move up or down. */
+    align-content: start;
+    padding-top: calc(var(--island-height) + var(--space-24));
+    padding-bottom: var(--space-12);
+    /* Flat. No gradients on large surfaces — a wash here would also spend
+       accent budget on decoration, and the accent is capped at 10% of the
+       screen for the CTA to keep working. See DESIGN.md §1. */
+  }
+
+  /**
+   * No `max-width` of its own: the block inherits `.container`'s 72rem, so
+   * the headline starts on the same left edge as every register entry below
+   * it. Previously this was a centred 48rem block, which pushed the hero
+   * text noticeably further right than the rest of the page.
+   */
+  .hero__content {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-5);
+    /* Gives AnimatedHeadline a `cqi` to size itself against, so the headline
+       can shrink to stay on one line without reading the viewport width
+       (which would ignore the container's max-width and padding). */
+    container-type: inline-size;
+  }
+
+  /* Lead paragraph: larger, but capped to a comfortable measure. */
+  .hero__subtitle {
+    font-size: var(--text-lg);
+    color: var(--color-ink-muted);
+    max-width: 46ch;
+  }
+
+  .hero__actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-3);
+  }
+
+  /* ── Credentials ─────────────────────────────────────────────────────
+     A ruled line rather than three badges. Badges would read as a second
+     CTA row competing with the buttons above; a rule reads as a footnote
+     to the claim, which is what it is. */
+  .hero__facts {
+    list-style: none;
+    margin: var(--space-8) 0 0;
+    padding: var(--space-4) 0 0;
+    border-top: 1px solid var(--color-line);
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--space-2) var(--space-5);
+
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  /* Separators drawn in CSS so they are not read out as content. */
+  .hero__facts li + li::before {
+    content: '·';
+    margin-right: var(--space-5);
+    color: var(--color-ink-subtle);
+  }
+
+  .hero__facts a {
+    color: inherit;
+    font-variant-numeric: tabular-nums;
+    text-underline-offset: 0.2em;
+  }
+
+  .hero__facts a:hover {
+    color: var(--color-brand-500);
+  }
+
+  @media (max-width: 34rem) {
+    .hero__facts {
+      gap: var(--space-2);
+      flex-direction: column;
+      align-items: flex-start;
+    }
+
+    .hero__facts li + li::before {
+      content: none;
+    }
+  }
+
+  /* Short landscape screens: the full-height rule would squeeze the content,
+     so let the section size to its contents instead. */
+  @media (max-height: 34rem) {
+    .hero {
+      min-height: 0;
+      padding-bottom: var(--space-12);
+    }
+  }
+</style>

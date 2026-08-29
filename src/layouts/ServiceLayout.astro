@@ -1,0 +1,236 @@
+---
+/**
+ * Shared shell for the seven service pages.
+ *
+ * Owns everything that must be identical across them — Service structured
+ * data wired to the firm's @id, hreflang restricted to the locales the page
+ * actually has, the back-link to the hub and the sideways links to related
+ * services. The page itself supplies only prose.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getLangFromUrl, useTranslations, pathFor } from '@i18n/utils';
+import { getService, copy } from '@/data/services';
+import { serviceSchema } from '@/lib/schema';
+import { site } from '@/data/site';
+
+interface Props {
+  /** id from src/data/services.ts */
+  service: string;
+  /** schema.org serviceType — a category, not a sentence. */
+  serviceType: string;
+  /**
+   * Where the service is delivered. Ploiești + Prahova for the local ones;
+   * "România" for raport de cenzor, which is written for a national audience
+   * because the local search volume for it is effectively zero.
+   */
+  areaServed?: string[];
+}
+
+const { service: id, serviceType, areaServed = ['Ploiești', 'Prahova'] }: Props = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const service = getService(id);
+const c = copy(service, lang);
+
+if (!c) {
+  throw new Error(`Service "${id}" has no ${lang} copy but a ${lang} page exists for it.`);
+}
+
+const url = new URL(Astro.url.pathname, Astro.site ?? site.url).toString();
+
+const schema = serviceSchema({
+  name: c.title,
+  description: c.description,
+  url,
+  serviceType,
+  areaServed,
+  lang,
+});
+
+// Sideways links. Only to services that exist in THIS language — an English
+// page must never link into the Romanian-only set.
+const related = service.related
+  .map(getService)
+  .filter((s) => s.locales.includes(lang))
+  .map((s) => ({ service: s, c: copy(s, lang)! }));
+
+const hubHref = pathFor('services', lang);
+---
+
+<BaseLayout title={c.title} description={c.description} locales={service.locales}>
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(schema)}
+    is:inline
+  />
+
+  <article class="service">
+    <div class="container">
+      <nav class="crumb" aria-label={t('nav.services')}>
+        <a href={hubHref}>{t('nav.services')}</a>
+      </nav>
+
+      <h1>{c.h1}</h1>
+
+      <div class="service__body">
+        <slot />
+      </div>
+
+      {
+        related.length > 0 && (
+          <aside class="related" aria-labelledby="related-heading">
+            <h2 id="related-heading">{t('services.related')}</h2>
+            <ul>
+              {related.map((r) => (
+                <li>
+                  <a href={`${hubHref}/${r.c.slug}`}>
+                    <span class="related__name">{r.c.h1}</span>
+                    <span class="related__teaser">{r.c.teaser}</span>
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </aside>
+        )
+      }
+
+      <p class="back">
+        <a href={hubHref}>{t('services.backToHub')}</a>
+      </p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .service {
+    padding-block: var(--space-12) var(--space-24);
+  }
+
+  .crumb {
+    font-size: var(--text-sm);
+    margin-bottom: var(--space-4);
+  }
+
+  .crumb a {
+    color: var(--color-ink-muted);
+    text-decoration: none;
+  }
+
+  .crumb a:hover {
+    color: var(--color-brand-500);
+    text-decoration: underline;
+  }
+
+  h1 {
+    max-width: 20ch;
+  }
+
+  /* Long-form measure. The service pages are read, not scanned. */
+  .service__body {
+    max-width: var(--width-content);
+    margin-top: var(--space-8);
+  }
+
+  .service__body :global(h2) {
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-4);
+  }
+
+  .service__body :global(h3) {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+  }
+
+  .service__body :global(p) {
+    margin-bottom: var(--space-4);
+  }
+
+  .service__body :global(ul) {
+    margin: 0 0 var(--space-4);
+    padding-left: 0;
+    list-style: none;
+  }
+
+  /* Hairline-ruled list — a ledger, not a bulleted brochure. */
+  .service__body :global(ul li) {
+    padding: var(--space-3) 0 var(--space-3) var(--space-6);
+    border-bottom: 1px solid var(--color-line);
+    position: relative;
+  }
+
+  .service__body :global(ul li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.45em;
+    width: var(--space-3);
+    height: 1px;
+    background: var(--color-ink-subtle);
+  }
+
+  .service__body :global(ul li:first-child) {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .service__body :global(.lede) {
+    font-size: var(--text-lg);
+    color: var(--color-ink-body);
+  }
+
+  /* ── Related ────────────────────────────────────────────────────────── */
+  .related {
+    margin-top: var(--space-16);
+    padding-top: var(--space-6);
+    border-top: 2px solid var(--color-ink);
+    max-width: var(--width-content);
+  }
+
+  .related h2 {
+    font-size: var(--text-sm);
+    font-family: var(--font-sans);
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    margin-bottom: var(--space-4);
+  }
+
+  .related ul {
+    list-style: none;
+    padding: 0;
+    display: grid;
+    gap: 0;
+  }
+
+  .related li + li {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .related a {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4) 0;
+    text-decoration: none;
+  }
+
+  .related__name {
+    color: var(--color-brand-500);
+    font-weight: var(--weight-semi);
+  }
+
+  .related a:hover .related__name {
+    text-decoration: underline;
+  }
+
+  .related__teaser {
+    color: var(--color-ink-muted);
+    font-size: var(--text-sm);
+  }
+
+  .back {
+    margin-top: var(--space-8);
+    font-size: var(--text-sm);
+  }
+</style>

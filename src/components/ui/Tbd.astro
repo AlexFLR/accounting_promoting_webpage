@@ -1,0 +1,39 @@
+---
+/**
+ * A figure nobody has confirmed yet.
+ *
+ * Thresholds, deadlines and prices change, and an accounting site that states
+ * one wrongly is worse than one that states none — so these are never
+ * invented. This renders as visibly unfinished on the page, which is the
+ * point: it cannot be published by accident the way a plausible-looking
+ * made-up number can.
+ *
+ * `npm run tbd` lists every one of them across the site.
+ */
+interface Props {
+  /** What needs filling in, in plain words. */
+  label: string;
+}
+
+const { label }: Props = Astro.props;
+---
+
+<mark class="tbd" data-tbd={label} title={`De completat: ${label}`}
+  >⚠ {label}</mark
+>
+
+<style>
+  .tbd {
+    /* Deliberately loud, and deliberately NOT the reserved deadline red —
+       this is an editorial state, not a fiscal one. See DESIGN.md §1. */
+    background: var(--color-surface-well);
+    color: var(--color-ink);
+    border: 1px dashed var(--color-ink-subtle);
+    border-radius: var(--radius-sm);
+    padding: 0 0.35em;
+    font-family: var(--font-sans);
+    font-size: 0.9em;
+    font-weight: var(--weight-semi);
+    white-space: nowrap;
+  }
+</style>

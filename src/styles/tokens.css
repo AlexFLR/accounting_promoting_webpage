@@ -1,0 +1,234 @@
+/**
+ * Design tokens — Valvio Contexpert Business.
+ * Rationale for every decision is in /DESIGN.md.
+ *
+ * The palette is derived from the mark. The two logo variants are not just
+ * a light and a dark file — between them they define both themes:
+ *
+ *   light mark   V + rule #0A1F33   A outline #2E7BB4
+ *   dark  mark   V + rule #DCE8F2   A outline #7FB3D5
+ *
+ * TWO SCALES, not a swatch set:
+ *
+ *   --ledger-0..8     warm cream paper drifting to the logo navy. Surfaces,
+ *                     rules and text all come from this one ramp.
+ *   --blue-100..700   the single accent hue, 206° — the mark's own hue.
+ *
+ * Everything below the scales is an ALIAS. Components use aliases, never a
+ * raw scale step, so a palette change happens in one place.
+ *
+ * Never pure #000 or #FFF. Never a gradient on a large surface.
+ * Every ratio in these comments is measured, not estimated.
+ */
+:root {
+  color-scheme: light dark;
+
+  /* ══ Brand — straight off the mark ════════════════════════════════════*/
+  --logo-ink: #0a1f33;  /* V + horizontal rule */
+  --logo-blue: #2e7bb4; /* A outline */
+
+  /* ══ SCALE 1 — paper to ink ═══════════════════════════════════════════
+     Warm cream at the light end, cooling into the logo navy as it darkens.
+     The warm paper is doing real work: navy on cream is a different object
+     from navy on white, which is the look every competitor already has.
+     Ratios are against --ledger-1.                                       */
+  --ledger-0: #fdfbf7; /*  1.04  raised surfaces (cards) */
+  --ledger-1: #faf7f0; /*  ————  THE PAGE */
+  --ledger-2: #f3eee4; /*  1.08  alternating section bands */
+  --ledger-3: #eae3d5; /*  1.19  sunken wells, table header rows */
+  --ledger-4: #d6cfc2; /*  1.45  hairlines, table rules — DECORATIVE ONLY */
+  --ledger-5: #8f8a81; /*  3.21  interactive borders (form fields) */
+  --ledger-6: #5c6b7a; /*  5.11  muted / secondary text */
+  --ledger-7: #27394b; /* 11.07  body text */
+  --ledger-8: #0a1f33; /* 15.62  headings — THE LOGO NAVY */
+
+  /* ══ SCALE 2 — accent ═════════════════════════════════════════════════
+     Every step sits at hue 204–206°, matching the mark's 206°.
+
+     Note --blue-400 IS the logo blue, and it is NOT the link colour.
+     #2E7BB4 measures 4.26:1 on cream — under the 4.5:1 that body-size text
+     and button labels require. It clears 3:1, so it is legal for the mark,
+     for headings ≥24px and for borders. Links and buttons use --blue-500,
+     a darker step of the identical hue. See DESIGN.md §1.                */
+  --blue-100: #e4eff7; /*  1.09  active-row wash */
+  --blue-200: #a8cde6; /*  1.57  the headline dot's highlight */
+  --blue-400: #2e7bb4; /*  4.26  THE MARK — large text and borders only */
+  --blue-500: #215f8d; /*  6.36  links, primary button */
+  --blue-600: #1a4b70; /*  8.59  hover */
+  --blue-700: #143a57; /* 11.07  active / pressed */
+
+  /* ══ Aliases ══════════════════════════════════════════════════════════*/
+
+  /* Surfaces */
+  --color-surface: var(--ledger-1);
+  --color-surface-sunken: var(--ledger-2);
+  --color-surface-raised: var(--ledger-0);
+  --color-surface-well: var(--ledger-3);
+  --color-surface-alt: var(--ledger-2); /* legacy alias */
+
+  /* Ink */
+  --color-ink: var(--ledger-8);        /* 15.62:1 — headings */
+  --color-ink-body: var(--ledger-7);   /* 11.07:1 — body copy */
+  --color-ink-muted: var(--ledger-6);  /*  5.11:1 — clears AA at body size */
+  --color-ink-subtle: var(--ledger-5); /*  3.21:1 — LARGE TEXT / ICONS ONLY */
+  --color-ink-inverse: var(--ledger-1);
+
+  /* Accent. --color-brand-* names kept so components need no edit. */
+  --color-brand-50: var(--blue-100);
+  --color-brand-100: var(--blue-100);
+  --color-brand-200: var(--blue-200);
+  --color-brand-mark: var(--blue-400); /* the logo blue, non-text use */
+  --color-brand-500: var(--blue-500);
+  --color-brand-600: var(--blue-600);
+  --color-brand-700: var(--blue-700);
+
+  /* Rules. Two tiers, and the split is a WCAG requirement rather than
+     taste: decorative hairlines may be faint, but anything defining an
+     INTERACTIVE boundary must clear 3:1 (WCAG 1.4.11). --ledger-4 measures
+     1.45:1 — fine ruling a table, never outlining a form field.
+
+     These stay WARM while the ink turns navy. That deliberate mismatch is
+     what keeps the page from reading as the standard cool corporate blue. */
+  --color-line: var(--ledger-4);        /* hairlines, table rules */
+  --color-line-strong: var(--ledger-5); /* form fields, focusable edges */
+
+  /* ══ Semantic — RATIONED ══════════════════════════════════════════════
+     Red is reserved EXCLUSIVELY for imminent fiscal deadline counters
+     (D112, D300, D394). Green is reserved EXCLUSIVELY for depus / la termen
+     states. Spending either anywhere else destroys the urgency signal,
+     which is the only reason they exist. There is deliberately NO generic
+     "error red": form validation uses ink + icon + text instead.
+
+     The accent at 206° sits 161° from the red and 72° from the green, so
+     neither reserved colour is at risk of being mistaken for brand blue. */
+  --color-deadline: #a32a1c;      /* 6.76:1 on paper */
+  --color-deadline-wash: #fbecea; /* 1.07:1 — counter chip background */
+  --color-deadline-ink: #8f2417;  /* 7.52:1 on that wash */
+
+  --color-filed: #2c6b3a;         /* 6.00:1 on paper */
+  --color-filed-wash: #eaf3ec;    /* 1.06:1 */
+  --color-filed-ink: #255c31;     /* 6.98:1 on that wash */
+
+  /* Legacy aliases. NOTE: --color-error resolves to INK, not red — form
+     errors must not borrow the deadline signal. */
+  --color-error: var(--ledger-8);
+  --color-success: var(--color-filed);
+  --color-warning: var(--ledger-7);
+
+  /* ══ The floating header ══════════════════════════════════════════════*/
+  --island-bg: rgb(253 251 247 / 0.78);
+  --island-bg-solid: var(--ledger-0);
+  --island-border: rgb(10 31 51 / 0.12);
+  --island-height: 3.5rem;
+
+  /* Bottom-biased: positive Y, negative spread. Felt, not seen. Tinted with
+     the ink hue — a neutral grey shadow on warm paper reads dirty, not dim. */
+  --shadow-island:
+    0 6px 16px -6px rgb(10 31 51 / 0.16),
+    0 2px 5px -2px rgb(10 31 51 / 0.09);
+  --shadow-island-scrolled:
+    0 10px 28px -10px rgb(10 31 51 / 0.22),
+    0 3px 8px -3px rgb(10 31 51 / 0.11);
+
+  --shadow-sm: 0 1px 2px rgb(10 31 51 / 0.07);
+  --shadow-md: 0 4px 14px -4px rgb(10 31 51 / 0.11);
+  --shadow-lg: 0 16px 40px -12px rgb(10 31 51 / 0.18);
+
+  /* ══ Typography ═══════════════════════════════════════════════════════*/
+  --font-display: 'Vollda', 'Vollda Fallback', Georgia, serif;
+  --font-sans: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  --font-serif: 'Garamontio', 'Garamontio Fallback', Georgia, serif;
+
+  --text-sm: 0.875rem;
+  --text-base: 1rem;
+  --text-lg: 1.125rem;
+  --text-xl: clamp(1.25rem, 1.14rem + 0.55vw, 1.5rem);
+  --text-2xl: clamp(1.5rem, 1.17rem + 1.64vw, 2.25rem);
+  --text-3xl: clamp(2rem, 1.45rem + 2.73vw, 3.25rem);
+
+  --leading-tight: 1.2;
+  --leading-body: 1.6;
+
+  --weight-normal: 400;
+  --weight-semi: 600;
+  --weight-bold: 700;
+
+  /* ══ Spacing — 8pt grid ═══════════════════════════════════════════════*/
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-24: 6rem;
+
+  /* ══ Layout ═══════════════════════════════════════════════════════════*/
+  --width-content: 68ch;
+  --width-container: 72rem;
+
+  --radius-sm: 6px;
+  --radius-md: 10px;
+  --radius-lg: 20px;
+  --radius-pill: 999px;
+
+  --tap-target: 2.75rem;
+
+  /* ══ Motion ═══════════════════════════════════════════════════════════*/
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);
+  --duration-fast: 150ms;
+  --duration-base: 220ms;
+}
+
+/**
+ * Dark scheme — taken from the dark logo variant.
+ * The mark's navy becomes the page and its pale blue becomes the ink, so
+ * the two themes are the two logo files rather than an invented inversion.
+ */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) {
+    --logo-ink: #dce8f2;
+    --logo-blue: #7fb3d5;
+
+    --ledger-0: #16304a; /* raised */
+    --ledger-1: #0a1f33; /* THE PAGE — the mark's navy */
+    --ledger-2: #0f273d; /* bands */
+    --ledger-3: #143046;
+    --ledger-4: #1d3a52; /* hairlines */
+    --ledger-5: #5f7d96; /*  3.87:1 — interactive borders */
+    --ledger-6: #8fa3b5; /*  6.42:1 — muted */
+    --ledger-7: #c3d4e2; /* 11.01:1 — body */
+    --ledger-8: #dce8f2; /* 13.42:1 — headings, the mark's pale blue */
+
+    --blue-100: #16304a;
+    --blue-200: #46739b; /* dot highlight, still visible on navy */
+    --blue-400: #7fb3d5; /*  7.41:1 — the dark mark's blue */
+    --blue-500: #7fb3d5; /*  7.41:1 — links and buttons */
+    --blue-600: #9bc6e0; /*  9.19:1 — hover */
+    --blue-700: #b8d7ea;
+
+    /* The primary button inverts: pale blue fill, navy label (7.41:1). */
+    --color-ink-inverse: var(--ledger-1);
+
+    --color-deadline: #e08a7e;      /* 6.45:1 */
+    --color-deadline-wash: #3a1f1c;
+    --color-deadline-ink: #f0b3aa;
+
+    --color-filed: #7cb98a;         /* 7.29:1 */
+    --color-filed-wash: #1c3323;
+    --color-filed-ink: #a5d4ae;
+
+    --island-bg: rgb(22 48 74 / 0.78);
+    --island-border: rgb(220 232 242 / 0.14);
+
+    /* Shadows barely read on a dark ground — the border carries the edge. */
+    --shadow-island:
+      0 6px 16px -6px rgb(0 0 0 / 0.5),
+      0 2px 5px -2px rgb(0 0 0 / 0.3);
+    --shadow-island-scrolled:
+      0 10px 28px -10px rgb(0 0 0 / 0.66),
+      0 3px 8px -3px rgb(0 0 0 / 0.4);
+  }
+}

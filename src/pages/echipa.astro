@@ -1,0 +1,140 @@
+---
+/**
+ * Echipa — the firm and the people in it.
+ *
+ * Paired with /en/team. It exists for more than navigation: accounting is a
+ * "your money or your life" topic in Google's terms, where demonstrable
+ * expertise and a real, named, credentialed human behind the advice carry
+ * real ranking weight. A blog without an author anyone can verify is worth
+ * considerably less than one with.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { site } from '@/data/site';
+---
+
+<BaseLayout
+  title="Echipa"
+  description="Cine ține contabilitatea firmei tale: experți contabili membri CECCAR, cu birou în Ploiești. Aceleași persoane, de la primul mesaj până la bilanț."
+  locales={['ro', 'en']}
+>
+  <section class="team">
+    <div class="container">
+      <h1>Echipa</h1>
+
+      <p class="lede">
+        Suntem un birou mic, în Ploiești. Asta înseamnă că vorbești cu aceeași persoană
+        de fiecare dată, nu cu un call center, și că cine îți răspunde la telefon este
+        cine îți ține efectiv contabilitatea.
+      </p>
+
+      <h2>Cine lucrează pe firma ta</h2>
+
+      <ul class="people">
+        <li>
+          <p class="person__name"><Tbd label="nume expert contabil coordonator" /></p>
+          <p class="person__role">Expert contabil, membru CECCAR — carnet nr. <Tbd label="număr carnet CECCAR" /></p>
+          <p class="person__note">
+            <Tbd label="experiență și domenii — 1–2 propoziții" />
+          </p>
+        </li>
+        <li>
+          <p class="person__name"><Tbd label="nume al doilea membru" /></p>
+          <p class="person__role"><Tbd label="rol / calificare" /></p>
+          <p class="person__note">
+            <Tbd label="experiență și domenii — 1–2 propoziții" />
+          </p>
+        </li>
+      </ul>
+
+      <h2>Cum lucrăm</h2>
+
+      <p>
+        Ne asumăm termene, nu intenții. Documentele primite până la data convenită sunt
+        înregistrate în luna respectivă, iar balanța și situația sumelor de plată ajung
+        la tine înainte de termenele de depunere, nu în ziua lor.
+      </p>
+
+      <p>
+        Nu percepem taxe pentru întrebări. Dacă vrei să știi înainte de a semna un
+        contract cum se impozitează, întrebarea intră în abonament — a afla după
+        semnare costă întotdeauna mai mult decât a întreba înainte.
+      </p>
+
+      <p>
+        Spunem și când nu ne pricepem. Pentru consultanță fiscală complexă, prețuri de
+        transfer sau litigii cu ANAF lucrăm cu <Tbd label="parteneri / colaboratori externi" />,
+        în loc să improvizăm.
+      </p>
+
+      <h2>Biroul</h2>
+
+      <p>
+        {site.address.street}, {site.address.city}, județul {site.address.region}.
+        Program: luni–vineri, {site.hours[0].opens}–{site.hours[0].closes}. Documentele
+        pot fi aduse la birou sau trimise scanat — pentru majoritatea clienților,
+        întâlnirile față în față sunt rare după preluare.
+      </p>
+
+      <p>
+        Suntem înregistrați la CECCAR cu autorizația nr. <Tbd label="număr autorizație CECCAR a societății" />
+        și avem asigurare de răspundere civilă profesională pentru
+        <Tbd label="plafon asigurare răspundere civilă" />.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .team {
+    padding-block: var(--space-12) var(--space-24);
+  }
+
+  .lede {
+    max-width: 58ch;
+    font-size: var(--text-lg);
+    color: var(--color-ink-body);
+    margin-top: var(--space-6);
+  }
+
+  h2 {
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-4);
+    max-width: var(--width-content);
+  }
+
+  p {
+    max-width: var(--width-content);
+    margin-bottom: var(--space-4);
+  }
+
+  .people {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: var(--width-content);
+    border-top: 2px solid var(--color-ink);
+  }
+
+  .people li {
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .person__name {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    margin-bottom: var(--space-1);
+  }
+
+  .person__role {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .person__note {
+    margin-bottom: 0;
+  }
+</style>

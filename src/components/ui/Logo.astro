@@ -1,0 +1,60 @@
+---
+/**
+ * The Valvio mark: an outlined A over a solid V, split by a rule.
+ *
+ * One SVG serves both themes. The two brand colours come from tokens rather
+ * than being hard-coded, so the mark follows the scheme automatically —
+ * which is what the separate light/dark files in public/images/ do by hand.
+ * Those stay for favicon and Open Graph use, where CSS cannot reach.
+ */
+interface Props {
+  /** Rendered height. Width follows the 160:132 aspect ratio. */
+  size?: string;
+  /** Decorative next to a visible wordmark; titled when it stands alone. */
+  title?: string;
+  class?: string;
+}
+
+const { size = '1.75rem', title, class: className }: Props = Astro.props;
+---
+
+<svg
+  class:list={['logo', className]}
+  viewBox="0 0 160 132"
+  fill="none"
+  role={title ? 'img' : 'presentation'}
+  aria-hidden={title ? undefined : 'true'}
+  style={`height:${size}`}
+>
+  {title && <title>{title}</title>}
+
+  {/* V — solid */}
+  <polygon
+    points="22,66 114,66 68,122"
+    fill="var(--logo-ink)"
+    stroke="var(--logo-ink)"
+    stroke-width="9"
+    stroke-linejoin="miter"
+    stroke-miterlimit="10"></polygon>
+
+  {/* A — outline only */}
+  <polygon
+    points="46,66 138,66 92,10"
+    fill="none"
+    stroke="var(--logo-blue)"
+    stroke-width="9"
+    stroke-linejoin="miter"
+    stroke-miterlimit="10"></polygon>
+
+  {/* The rule */}
+  <path d="M10 66 H150" stroke="var(--logo-ink)" stroke-width="9" stroke-linecap="butt"></path>
+</svg>
+
+<style>
+  .logo {
+    display: block;
+    width: auto;
+    flex: none;
+    overflow: visible; /* the 9px stroke sits proud of the viewBox */
+  }
+</style>

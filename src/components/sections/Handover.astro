@@ -1,0 +1,108 @@
+---
+/**
+ * "Cum decurge preluarea" — the objection-handling section.
+ *
+ * The visitor's real question is not "are you good", it is "is switching
+ * going to hurt". Answering that converts better than another trust badge.
+ *
+ * Uses the same register rows as the services list, so the two read as parts
+ * of one document. The step numbers are a genuine sequence — a handover has
+ * an order, and the order is the information.
+ */
+import Section from '@components/ui/Section.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { pathFor, getLangFromUrl, useTranslations, type Lang } from '@i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+/**
+ * The steps live here rather than in ui.ts: each is a title/body pair, and
+ * flattening structured content into a dozen loose translation keys makes it
+ * much easier to translate one half of a pair and forget the other.
+ */
+const stepsByLang: Record<Lang, { title: string; body: string }[]> = {
+  ro: [
+    {
+      title: 'Ne spui unde ești acum',
+      body: 'Forma de organizare, TVA, salariați, volumul de documente. Din astea rezultă prețul.',
+    },
+    {
+      title: 'Cerem dosarul de la contabilul anterior',
+      body: 'Cererea o facem noi. Tu doar anunți că schimbi.',
+    },
+    {
+      title: 'Verificăm soldurile înainte să preluăm',
+      body: 'Dacă găsim probleme din perioada anterioară, îți spunem înainte de a începe.',
+    },
+    {
+      title: 'Preluăm SPV-ul și continuăm',
+      body: 'Din prima lună depunem noi. Activitatea nu se întrerupe.',
+    },
+  ],
+  en: [
+    {
+      title: 'Tell us where you are now',
+      body: 'Legal form, VAT status, headcount and roughly how many documents a month. The price comes from those.',
+    },
+    {
+      title: 'We request your file from your current accountant',
+      body: 'We make the request. You only have to say that you are changing.',
+    },
+    {
+      title: 'We check the opening balances before taking over',
+      body: 'If we find anything unresolved from the previous period, you hear about it before we start.',
+    },
+    {
+      title: 'We take over SPV access and carry on',
+      body: 'We file from the first month. Trading is never interrupted.',
+    },
+  ],
+};
+
+const steps = stepsByLang[lang];
+---
+
+<Section section="preluare">
+  <ol class="reg">
+    {
+      steps.map((step, i) => (
+        <li class="reg__row">
+          <span class="reg__ref">{String(i + 1).padStart(2, '0')}</span>
+          <span class="reg__main">
+            <span class="reg__title">{step.title}</span>
+            <span class="reg__note">{step.body}</span>
+          </span>
+        </li>
+      ))
+    }
+  </ol>
+
+  <p class="after">
+    <a class="button button--primary" href={pathFor('contact', lang)}>{t('nav.cta')}</a>
+    <span class="after__note">
+      {t('home.handoverNote')} <Tbd label="durata preluării" />. {t('home.replyTime')}
+    </span>
+  </p>
+</Section>
+
+<style>
+  ol.reg {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .after {
+    display: flex;
+    align-items: center;
+    gap: var(--space-4);
+    flex-wrap: wrap;
+    margin-top: var(--space-8);
+  }
+
+  .after__note {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+</style>

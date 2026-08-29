@@ -1,0 +1,99 @@
+---
+/**
+ * Bilanț — a deliverable, not a recurring service, so the page is written
+ * for someone who needs one produced rather than someone shopping for a
+ * monthly retainer. That includes firms whose own accountant does not file
+ * the annual accounts.
+ */
+import ServiceLayout from '@layouts/ServiceLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+---
+
+<ServiceLayout service="bilant" serviceType="Întocmire situații financiare anuale">
+  <p class="lede">
+    Întocmim și depunem situațiile financiare anuale: bilanțul, contul de
+    profit și pierdere, notele explicative și declarația administratorului.
+  </p>
+
+  <p>
+    Le facem atât pentru clienții pe abonament, cât și pentru firme care își
+    țin contabilitatea în altă parte și au nevoie doar de lucrarea anuală.
+    În al doilea caz, pornim de la balanța ta și de la registrele existente.
+  </p>
+
+  <h2>Ce cuprinde lucrarea</h2>
+
+  <ul>
+    <li>Bilanțul</li>
+    <li>Contul de profit și pierdere</li>
+    <li>Notele explicative la situațiile financiare</li>
+    <li>Declarația administratorului privind asumarea răspunderii</li>
+    <li>Raportul administratorului, unde este obligatoriu</li>
+    <li>Depunerea la ANAF și obținerea recipisei</li>
+  </ul>
+
+  <h2>Înainte de bilanț: închiderea de an</h2>
+
+  <p>
+    Un bilanț corect este rezultatul închiderii, nu un formular completat în
+    ultima săptămână. Lucrările care îl preced:
+  </p>
+
+  <ul>
+    <li>Inventarierea patrimoniului și punerea de acord a soldurilor faptice cu cele scriptice</li>
+    <li>Confirmarea soldurilor cu clienții și furnizorii</li>
+    <li>Calculul și înregistrarea amortizării pentru tot exercițiul</li>
+    <li>Constituirea provizioanelor și a ajustărilor pentru depreciere</li>
+    <li>Reevaluarea disponibilităților în valută la cursul de închidere</li>
+    <li>Calculul impozitului pe profit și regularizarea plăților anticipate</li>
+  </ul>
+
+  <p>
+    Dacă preluăm o firmă în cursul anului, aici ies la iveală problemele din
+    perioada anterioară — solduri care nu se justifică, mijloace fixe care nu
+    mai există fizic, clienți încasați dar neînchiși. Îți spunem ce găsim și
+    ce costă îndreptarea, înainte de a semna lucrarea.
+  </p>
+
+  <h2>Termene</h2>
+
+  <ul>
+    <li>Societăți comerciale: <Tbd label="termen depunere bilanț societăți" /></li>
+    <li>Asociații, fundații și alte entități fără scop patrimonial: <Tbd label="termen depunere bilanț ONG" /></li>
+  </ul>
+
+  <p>
+    Nedepunerea la termen se sancționează cu amendă de la
+    <Tbd label="cuantum amendă nedepunere bilanț" />, iar repetarea poate atrage
+    <Tbd label="consecință repetare nedepunere" />.
+  </p>
+
+  <h2>Când este nevoie și de un cenzor</h2>
+
+  <p>
+    Peste anumite praguri, sau pentru anumite forme de organizare, situațiile
+    financiare trebuie verificate de un cenzor. Facem și această lucrare —
+    este descrisă pe pagina de
+    <a href="/servicii/raport-cenzor">raport de cenzor</a>.
+  </p>
+
+  <h2>Ce ne trebuie</h2>
+
+  <ul>
+    <li>Balanța de verificare la 31 decembrie</li>
+    <li>Registrul-inventar și listele de inventariere</li>
+    <li>Situația mijloacelor fixe și a amortizării</li>
+    <li>Extrasele de cont la data închiderii</li>
+    <li>Contractele de credit și de leasing în derulare</li>
+    <li>Ultimul bilanț depus, pentru comparativele din situații</li>
+  </ul>
+
+  <h2>Tarife</h2>
+
+  <p>
+    Pentru clienții pe abonament, lucrarea anuală este inclusă. Separat, tariful
+    pornește de la <Tbd label="tarif bilanț firmă mică" /> lei pentru o firmă
+    fără salariați și fără TVA, și depinde de volumul de operațiuni și de
+    starea evidenței primite.
+  </p>
+</ServiceLayout>

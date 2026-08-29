@@ -1,0 +1,287 @@
+---
+/**
+ * A headline whose final period is animated: the words fade up, then the dot
+ * drops in from well above the viewport, bounces, and rolls left into place
+ * as the sentence's full stop.
+ *
+ * Ships zero JavaScript — it is CSS keyframes end to end.
+ *
+ * Accessibility: the real "." stays in the markup at `color: transparent`.
+ * It reserves the exact advance width and remains in the accessibility tree,
+ * so screen readers and copy-paste get the whole sentence.
+ */
+interface Props {
+  /** Sentence WITHOUT the final period — the component supplies it. */
+  text: string;
+  as?: 'h1' | 'h2';
+  class?: string;
+}
+
+const { text, as: Tag = 'h1', class: className }: Props = Astro.props;
+const words: string[] = text.trim().replace(/\.$/, '').split(/\s+/);
+
+/* Character count including the period. Drives the fit-to-one-line font size
+   below — CSS cannot measure text, but we know the string at build time. */
+const chars: number = words.join(' ').length + 1;
+---
+
+{/* NOTE: the whitespace in this block is load-bearing. Newlines and indentation
+    between these elements become text nodes, which would put a visible gap
+    before the full stop. Word spacing comes from the explicit {' '} only. */}
+<Tag class:list={['headline', className]} style={`--words:${words.length};--chars:${chars}`}
+  >{words.map((word, i) => (<><span class="headline__word" style={`--i:${i}`}>{word}</span>{i < words.length - 1 ? ' ' : ''}</>))}<span class="headline__period"
+    ><span class="headline__stage" aria-hidden="true"
+      ><span class="headline__x"
+        ><span class="headline__y"
+          ><span class="headline__spin"><span class="headline__dot"></span></span></span
+        ></span
+      ></span
+    ><span class="headline__glyph">.</span></span
+  >
+</Tag>
+
+<style>
+  .headline {
+    /* ── Timeline ──────────────────────────────────────────────────────
+       Delays derive from the word count, so the dot always waits for the
+       text to settle regardless of headline length.                     */
+    --t-word: 520ms;
+    --stagger: 60ms;
+    --t-drop: 1100ms; /* long fall + two bounces */
+    --t-roll: 640ms;
+
+    --d-drop: calc(var(--t-word) + var(--words, 4) * var(--stagger));
+    /* Roll starts 60ms before the bounce fully settles — strict sequencing
+       reads as robotic; slight overlap reads as physical. */
+    --d-roll: calc(var(--d-drop) + var(--t-drop) - 60ms);
+
+    /* ── Geometry ──────────────────────────────────────────────────────
+       Roll distance and dot size are both in `em`, which lets the spin be
+       derived rather than guessed: a rolling circle turns
+       distance / circumference times.
+         1.4em / (π × 0.16em) = 2.79 turns = ~1000deg                    */
+    --dot-size: 0.18em;
+    --roll-from: 1.19em;
+    --spin-from: 1000deg;
+
+    /* Advance width of the "." glyph — used only to centre the dot within
+       the space the invisible period reserves. Approximate is fine here;
+       the glyph it sits on is transparent. */
+    --period-advance: 0.26em;
+
+    /* How far above the viewport the dot starts. */
+    --drop-height: 160vh;
+
+    /* ── Fit to a single line ──────────────────────────────────────────
+       The headline must not wrap, so it has to shrink on narrow screens.
+       CSS cannot measure text, but the component knows the character count,
+       so the width can be predicted.
+
+       0.54em/char is MEASURED, not guessed — read out of Vollda's hmtx
+       table, where the longer of the two headline strings averages
+       0.5030em/char. The rest is headroom, which matters because an
+       underestimate overflows the page horizontally while an overestimate
+       only makes the headline slightly smaller than it had to be. Err large.
+
+       The metric-matched fallback in fonts.css is what keeps this valid
+       before Vollda loads: raw Georgia Bold runs 0.5511em/char and would
+       overflow this figure during the swap. See DESIGN.md §2.
+
+       The + 1.4 reserves room for the dot's landing position, 1.4em to the
+       right of the period. Without it, a nowrap line that exactly fills the
+       container would push the dot into horizontal overflow. */
+    font-size: min(var(--text-3xl), calc(100cqi / (var(--chars, 24) * 0.54 + 1.4)));
+    white-space: nowrap;
+  }
+
+  /* ── 1. Text reveal ───────────────────────────────────────────────────*/
+  .headline__word {
+    display: inline-block; /* transformable */
+    opacity: 0;
+    transform: translateY(0.35em);
+    animation: word-in var(--t-word) var(--ease-out) forwards;
+    animation-delay: calc(var(--i) * var(--stagger));
+  }
+
+  @keyframes word-in {
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+
+  /* ── The period ───────────────────────────────────────────────────────*/
+
+  /* Invisible, but present for screen readers, search engines and
+     copy-paste — and it reserves the exact advance width. */
+  .headline__glyph {
+    color: transparent;
+  }
+
+  /**
+   * Baseline anchor. A zero-size inline-block containing no in-flow line
+   * boxes takes its baseline from its bottom margin edge (CSS2.1 §10.8.1),
+   * so this box's bottom edge lands EXACTLY on the text baseline — which is
+   * where a period's ink sits.
+   *
+   * This replaces an earlier `bottom: 0.3em` guess measured from the bottom
+   * of the inline box. That offset depended on line-height and the font's
+   * descender metrics, so it was wrong by an amount that changed with every
+   * type-scale step. Nothing here is tuned by eye.
+   */
+  .headline__stage {
+    display: inline-block;
+    position: relative;
+    width: 0;
+    height: 0;
+    vertical-align: baseline;
+  }
+
+  /* Each transform gets its own element so the four motions can carry
+     independent durations, delays and easings without fighting over a
+     single `transform` property. */
+  .headline__x {
+    position: absolute;
+    bottom: 0; /* the stage's bottom edge IS the baseline */
+    left: calc((var(--period-advance) - var(--dot-size)) / 2);
+    width: var(--dot-size);
+    height: var(--dot-size);
+    transform: translateX(var(--roll-from));
+    animation: dot-roll var(--t-roll) cubic-bezier(0.34, 0.9, 0.3, 1) var(--d-roll) forwards;
+    will-change: transform;
+  }
+
+  .headline__y,
+  .headline__spin,
+  .headline__dot {
+    display: block;
+    width: 100%;
+    height: 100%;
+  }
+
+  .headline__y {
+    transform: translateY(calc(-1 * var(--drop-height)));
+    animation: dot-drop var(--t-drop) linear var(--d-drop) forwards;
+    will-change: transform;
+  }
+
+  .headline__spin {
+    transform: rotate(var(--spin-from));
+    animation: dot-spin var(--t-roll) cubic-bezier(0.34, 0.9, 0.3, 1) var(--d-roll) forwards;
+  }
+
+  .headline__dot {
+    border-radius: 50%;
+    /* Off-centre highlight. A uniform circle shows no rotation at all —
+       without this asymmetry the roll would be completely invisible. */
+    background: radial-gradient(
+      circle at 32% 28%,
+      var(--color-brand-200),
+      var(--color-brand-500) 60%
+    );
+    animation: dot-squash var(--t-drop) linear var(--d-drop) forwards;
+  }
+
+  /* ── 2. Drop + bounce ─────────────────────────────────────────────────
+     Per-keyframe timing functions: accelerating on the way down (gravity),
+     decelerating on the way up. A single easing across the whole animation
+     cannot express a bounce.
+
+     The fall now occupies 62% of the timeline rather than 52%, so the extra
+     drop height reads as a longer fall instead of just a faster one.      */
+  @keyframes dot-drop {
+    0% {
+      transform: translateY(calc(-1 * var(--drop-height)));
+      animation-timing-function: cubic-bezier(0.45, 0, 0.85, 0.4);
+    }
+    62% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.15, 0.75, 0.35, 1);
+    }
+    77% {
+      transform: translateY(-0.5em);
+      animation-timing-function: cubic-bezier(0.7, 0, 0.9, 0.4);
+    }
+    88% {
+      transform: translateY(0);
+      animation-timing-function: cubic-bezier(0.15, 0.75, 0.35, 1);
+    }
+    95% {
+      transform: translateY(-0.13em);
+      animation-timing-function: cubic-bezier(0.7, 0, 0.9, 0.4);
+    }
+    100% {
+      transform: translateY(0);
+    }
+  }
+
+  /* Squash on impact. Shares duration and delay with dot-drop, so these
+     percentages line up with the two contact moments (62% and 88%). */
+  @keyframes dot-squash {
+    0%,
+    60% {
+      transform: scale(1, 1);
+    }
+    65% {
+      transform: scale(1.34, 0.68);
+    }
+    71% {
+      transform: scale(0.94, 1.05);
+    }
+    76%,
+    86% {
+      transform: scale(1, 1);
+    }
+    90% {
+      transform: scale(1.15, 0.87);
+    }
+    94%,
+    100% {
+      transform: scale(1, 1);
+    }
+  }
+
+  /* ── 3. Roll left and snap ────────────────────────────────────────────*/
+  @keyframes dot-roll {
+    to {
+      transform: translateX(0);
+    }
+  }
+
+  /* Counter-clockwise (decreasing angle) — the direction a ball actually
+     turns when travelling left. */
+  @keyframes dot-spin {
+    to {
+      transform: rotate(0deg);
+    }
+  }
+
+  /* ── Reduced motion ───────────────────────────────────────────────────
+     No travel, no bounce, no spin. The content still arrives, it just
+     cross-fades in place. */
+  @media (prefers-reduced-motion: reduce) {
+    .headline__word {
+      transform: none;
+      animation: fade-in 300ms var(--ease-out) forwards;
+      animation-delay: 0ms;
+    }
+
+    .headline__x,
+    .headline__y,
+    .headline__spin {
+      transform: none;
+      animation: none;
+    }
+
+    .headline__dot {
+      opacity: 0;
+      animation: fade-in 300ms var(--ease-out) 200ms forwards;
+    }
+
+    @keyframes fade-in {
+      to {
+        opacity: 1;
+      }
+    }
+  }
+</style>

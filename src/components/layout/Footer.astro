@@ -1,0 +1,85 @@
+---
+import { getLangFromUrl, useTranslations, pathFor } from '@i18n/utils';
+import { site } from '@/data/site';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const year = new Date().getFullYear();
+---
+
+<footer class="footer">
+  <div class="container footer__inner">
+    <div>
+      <p class="footer__brand">{site.legalName}</p>
+      <address>
+        {site.address.street}, {site.address.city}<br />
+        <a href={site.phoneHref}>{site.phone}</a><br />
+        <a href={`mailto:${site.email}`}>{site.email}</a>
+      </address>
+    </div>
+
+    <div>
+      <h2 class="footer__heading">{t('footer.hours')}</h2>
+      <ul class="footer__list">
+        {site.hours.map((h) => <li>{h.days}: {h.opens}–{h.closes}</li>)}
+      </ul>
+    </div>
+
+    <div>
+      <h2 class="footer__heading">{t('footer.legal')}</h2>
+      <ul class="footer__list">
+        <li><a href={pathFor('contact', lang)}>{t('nav.contact')}</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="container footer__bottom">
+    <small>© {year} {site.legalName}. {t('footer.rights')}</small>
+  </div>
+</footer>
+
+<style>
+  .footer {
+    margin-top: auto;
+    border-top: 1px solid var(--color-line);
+    background: var(--color-surface-alt);
+    padding-block: var(--space-8) var(--space-4);
+    font-size: var(--text-sm);
+  }
+
+  .footer__inner {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+
+  .footer__brand {
+    font-weight: 700;
+    margin-bottom: var(--space-2);
+  }
+
+  .footer__heading {
+    font-size: var(--text-sm);
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-ink-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .footer__list {
+    list-style: none;
+    padding: 0;
+  }
+
+  address {
+    font-style: normal;
+    color: var(--color-ink-muted);
+  }
+
+  .footer__bottom {
+    margin-top: var(--space-5);
+    padding-top: var(--space-3);
+    border-top: 1px solid var(--color-line);
+    color: var(--color-ink-muted);
+  }
+</style>

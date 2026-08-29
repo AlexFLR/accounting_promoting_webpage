@@ -1,0 +1,62 @@
+---
+import { getCollection, render } from 'astro:content';
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { articleSchema } from '@/lib/schema';
+
+const lang = 'en';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog', ({ id, data }) => id.startsWith('en/') && !data.draft);
+  return posts.map((post) => ({
+    params: { slug: post.id.replace('en/', '') },
+    props: { post },
+  }));
+}
+
+const { post } = Astro.props;
+const { Content } = await render(post);
+
+const schema = articleSchema({
+  ...post.data,
+  url: Astro.url.toString(),
+});
+---
+
+<BaseLayout title={post.data.title} description={post.data.description} locales={['en']}>
+  {/* Article bodies are the only place Garamontio is used, so it is
+      preloaded here rather than in BaseLayout. Regular only — italic and
+      semibold load on demand, since most articles use little of either. */}
+  <link
+    slot="head"
+    rel="preload"
+    href="/fonts/garamontio-regular.woff2"
+    as="font"
+    type="font/woff2"
+    crossorigin
+  />
+
+  <script
+    slot="head"
+    type="application/ld+json"
+    set:html={JSON.stringify(schema)}
+    is:inline
+  />
+
+  <article class="section container prose">
+    <h1>{post.data.title}</h1>
+    <p class="meta">
+      <time datetime={post.data.publishedAt.toISOString()}>
+        {post.data.publishedAt.toLocaleDateString(lang)}
+      </time>
+      · {post.data.author}
+    </p>
+    <Content />
+  </article>
+</BaseLayout>
+
+<style>
+  .meta {
+    color: var(--color-ink-muted);
+    font-size: var(--text-sm);
+  }
+</style>

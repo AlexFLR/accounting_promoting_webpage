@@ -1,0 +1,96 @@
+/**
+ * Self-hosted webfonts. All three families are SIL Open Font License 1.1 —
+ * free for commercial use and web embedding. Licence texts live in
+ * public/fonts/LICENSES/.
+ *
+ * Files are subsetted (Latin + Romanian) and converted to woff2 by
+ * `npm run fonts` — see scripts/build-fonts.mjs. Never ship OTF/TTF.
+ *
+ * Self-hosted rather than Google Fonts: one fewer third-party connection,
+ * and no EU personal-data question about a US font CDN receiving visitor IPs.
+ */
+
+/* ── Vollda — display. Headlines only. ────────────────────────────────── */
+@font-face {
+  font-family: 'Vollda';
+  src: url('/fonts/vollda-bold.woff2') format('woff2');
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* ── Garamontio — long-form article body. ─────────────────────────────── */
+@font-face {
+  font-family: 'Garamontio';
+  src: url('/fonts/garamontio-regular.woff2') format('woff2');
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Garamontio';
+  src: url('/fonts/garamontio-italic.woff2') format('woff2');
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: 'Garamontio';
+  src: url('/fonts/garamontio-semibold.woff2') format('woff2');
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+/**
+ * ── Metric-matched fallbacks ───────────────────────────────────────────
+ *
+ * `font-display: swap` means the fallback renders first and is then
+ * replaced. If the two fonts are different widths, that swap reflows the
+ * page — bad for Cumulative Layout Shift, and worse here because the hero
+ * headline is `white-space: nowrap` and sized to fit its container.
+ *
+ * These faces re-scale a locally installed font to the target's metrics, so
+ * the swap is close to invisible. Measured, not guessed:
+ *
+ *   Georgia Bold    is  6.6% wider than Vollda      -> size-adjust 93.8%
+ *   Georgia Regular is 14.1% wider than Garamontio  -> size-adjust 87.6%
+ *
+ * Ascent/descent are divided by the size-adjust factor, because the
+ * override percentages resolve against the already-adjusted em.
+ *
+ * If Georgia is not installed the `local()` lookup fails and the stack falls
+ * through to plain `serif` — slightly worse, never broken.
+ */
+@font-face {
+  font-family: 'Vollda Fallback';
+  src: local('Georgia Bold'), local('Georgia-Bold'), local('Georgia');
+  font-weight: 700;
+  size-adjust: 93.8%;
+  ascent-override: 101.5%;
+  descent-override: 47%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Garamontio Fallback';
+  src: local('Georgia'), local('Times New Roman');
+  font-weight: 400;
+  size-adjust: 87.6%;
+  ascent-override: 115%;
+  descent-override: 34%;
+  line-gap-override: 0%;
+}
+
+@font-face {
+  font-family: 'Garamontio Fallback';
+  src: local('Georgia Italic'), local('Georgia-Italic');
+  font-weight: 400;
+  font-style: italic;
+  size-adjust: 87.6%;
+  ascent-override: 115%;
+  descent-override: 34%;
+  line-gap-override: 0%;
+}

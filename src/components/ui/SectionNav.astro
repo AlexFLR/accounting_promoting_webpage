@@ -1,0 +1,130 @@
+---
+/**
+ * Vertical dot navigation, tracking the section currently in view.
+ *
+ * Real links, not buttons: they work before JavaScript runs, they can be
+ * opened in a new tab, and the browser's own smooth scrolling handles the
+ * movement. The observer only decorates them with the current state.
+ *
+ * Each dot carries a text label that is visible on hover and focus — a bare
+ * dot is unusable for anyone who cannot see where it goes, and "Section 3"
+ * would be no better.
+ */
+import { homeSections } from '@/data/homeSections';
+import { getLangFromUrl, useTranslations } from '@i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<nav class="dots" aria-label={t('a11y.sectionNav')} data-section-nav>
+  <ul>
+    {
+      homeSections.map((s) => (
+        <li>
+          <a href={`#${s.id}`} data-dot={s.id}>
+            <span class="dots__label">{s.label[lang]}</span>
+            <span class="dots__mark" aria-hidden="true" />
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  .dots {
+    position: fixed;
+    right: var(--space-5);
+    top: 50%;
+    translate: 0 -50%;
+    z-index: 40;
+    /* Fixed, so it is outside every section and inherits none of their ink
+       tokens. The active section's theme is published on <html> by the
+       observer; these rules follow it. */
+    color: var(--color-ink-muted);
+    transition: color 600ms var(--ease-out);
+  }
+
+  :global(html[data-active-theme='ink']) .dots {
+    color: #8fa3b5;
+  }
+
+  :global(html[data-active-theme='ink']) .dots a[aria-current='true'] {
+    color: #7fb3d5;
+  }
+
+  .dots ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .dots a {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: var(--space-3);
+    /* 44px target without a 44px dot. */
+    min-height: var(--tap-target);
+    padding-inline: var(--space-2);
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .dots__label {
+    font-size: 0.6875rem;
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    white-space: nowrap;
+    opacity: 0;
+    translate: 0.5rem 0;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      translate var(--duration-fast) var(--ease-out);
+  }
+
+  .dots a:hover .dots__label,
+  .dots a:focus-visible .dots__label {
+    opacity: 1;
+    translate: 0 0;
+  }
+
+  .dots__mark {
+    width: 0.5rem;
+    height: 0.5rem;
+    border-radius: 50%;
+    border: 1px solid currentColor;
+    background: transparent;
+    flex: none;
+    transition:
+      background-color var(--duration-base) var(--ease-out),
+      scale var(--duration-base) var(--ease-out);
+  }
+
+  .dots a:hover .dots__mark {
+    background: currentColor;
+  }
+
+  /* Current section — filled and enlarged, so it is not signalled by colour
+     alone for anyone who cannot distinguish the fill. */
+  .dots a[aria-current='true'] {
+    color: var(--color-brand-500);
+  }
+
+  .dots a[aria-current='true'] .dots__mark {
+    background: currentColor;
+    scale: 1.35;
+  }
+
+  /* No room beside the content on narrow screens, and the page is short
+     enough there that paging through it adds nothing. */
+  @media (max-width: 64rem) {
+    .dots {
+      display: none;
+    }
+  }
+</style>

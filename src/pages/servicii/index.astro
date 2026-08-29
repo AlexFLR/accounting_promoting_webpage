@@ -1,0 +1,122 @@
+---
+/**
+ * Services hub.
+ *
+ * Deliberately short. Its job is to route a visitor to the right child page,
+ * not to rank for anything itself — anything substantial written here would
+ * compete with the seven pages below it for the same queries, and the hub
+ * would lose. One paragraph, then the links.
+ *
+ * No "Ploiești" in the title or H1: that budget is spent on the SRL, PFA and
+ * salarizare pages, which are the three with real local volume.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { pathFor } from '@i18n/utils';
+import { servicesByGroup, copy } from '@/data/services';
+
+const lang = 'ro' as const;
+
+const groups = servicesByGroup(lang);
+const hubHref = pathFor('services', lang);
+---
+
+<BaseLayout
+  title="Servicii de contabilitate"
+  description="Contabilitate pentru SRL și PFA, salarizare, declarații fiscale, bilanț, raport de cenzor și e-Factura. Alege serviciul potrivit firmei tale."
+>
+  <section class="hub">
+    <div class="container">
+      <h1>Servicii</h1>
+
+      <p class="hub__intro">
+        Ținem contabilitatea firmelor mici și a persoanelor fizice autorizate din Ploiești
+        și din județul Prahova, iar pentru mandatele de cenzor lucrăm în toată țara.
+        Fiecare serviciu de mai jos are pagina lui, cu ce include, ce documente sunt
+        necesare și cum decurge colaborarea.
+      </p>
+
+      {
+        groups.map((group) => (
+          <section class="group">
+            <h2 class="group__label">{group.label}</h2>
+            <ul class="group__list">
+              {group.items.map((service) => {
+                const c = copy(service, lang)!;
+                return (
+                  <li>
+                    <a href={`${hubHref}/${c.slug}`}>
+                      <span class="group__name">{c.h1}</span>
+                      <span class="group__teaser">{c.teaser}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))
+      }
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hub {
+    padding-block: var(--space-12) var(--space-24);
+  }
+
+  .hub__intro {
+    max-width: 58ch;
+    font-size: var(--text-lg);
+    color: var(--color-ink-body);
+    margin-top: var(--space-6);
+  }
+
+  .group {
+    margin-top: var(--space-12);
+    max-width: var(--width-content);
+  }
+
+  /* The group heading is a label, not a headline — it classifies the links
+     under it rather than competing with them. */
+  .group__label {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-ink);
+  }
+
+  .group__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .group__list li + li {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .group__list a {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4) 0;
+    text-decoration: none;
+  }
+
+  .group__name {
+    color: var(--color-brand-500);
+    font-weight: var(--weight-semi);
+  }
+
+  .group__list a:hover .group__name {
+    text-decoration: underline;
+  }
+
+  .group__teaser {
+    color: var(--color-ink-muted);
+    font-size: var(--text-sm);
+  }
+</style>

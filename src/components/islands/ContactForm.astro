@@ -1,0 +1,223 @@
+---
+/**
+ * The one genuinely interactive piece on the site.
+ *
+ * It is a real <form> with a real `action`, so it works with JavaScript
+ * disabled. The inline script upgrades it to an async submit with inline
+ * validation — that is the "island" pattern: JS enhances, it does not enable.
+ */
+import { getLangFromUrl, useTranslations } from '@i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<form class="form" method="POST" action="/api/contact" data-contact-form novalidate>
+  <input type="hidden" name="lang" value={lang} />
+
+  <!-- Honeypot: hidden from humans, irresistible to bots. -->
+  <div class="form__honeypot" aria-hidden="true">
+    <label for="website">Leave this empty</label>
+    <input id="website" name="website" type="text" tabindex="-1" autocomplete="off" />
+  </div>
+
+  <div class="form__row">
+    <div class="field">
+      <label for="name">{t('contact.name')}</label>
+      <input id="name" name="name" type="text" autocomplete="name" required />
+      <p class="field__error" data-error-for="name"></p>
+    </div>
+
+    <div class="field">
+      <label for="email">{t('contact.email')}</label>
+      <input id="email" name="email" type="email" autocomplete="email" required />
+      <p class="field__error" data-error-for="email"></p>
+    </div>
+  </div>
+
+  <div class="form__row">
+    <div class="field">
+      <label for="phone">{t('contact.phone')}</label>
+      <input id="phone" name="phone" type="tel" autocomplete="tel" />
+    </div>
+
+    <div class="field">
+      <label for="company">{t('contact.company')}</label>
+      <input id="company" name="company" type="text" autocomplete="organization" />
+    </div>
+  </div>
+
+  <div class="field">
+    <label for="message">{t('contact.message')}</label>
+    <textarea id="message" name="message" rows="5" required></textarea>
+    <p class="field__error" data-error-for="message"></p>
+  </div>
+
+  <button type="submit" class="button button--primary" data-submit>
+    {t('contact.submit')}
+  </button>
+
+  <p class="form__status" role="status" aria-live="polite" data-status></p>
+</form>
+
+<script
+  is:inline
+  define:vars={{
+    messages: {
+      required: t('contact.required'),
+      invalidEmail: t('contact.invalidEmail'),
+      sending: t('contact.sending'),
+      submit: t('contact.submit'),
+      success: t('contact.success'),
+      error: t('contact.error'),
+    },
+  }}
+>
+  const form = document.querySelector('[data-contact-form]');
+  const button = form?.querySelector('[data-submit]');
+  const status = form?.querySelector('[data-status]');
+
+  const EMAIL = /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/;
+
+  function showError(field, key) {
+    const target = form.querySelector(`[data-error-for="${field}"]`);
+    const input = form.elements[field];
+    if (target) target.textContent = key ? messages[key] : '';
+    if (input) input.setAttribute('aria-invalid', key ? 'true' : 'false');
+  }
+
+  function validate(data) {
+    const errors = {};
+    if (!data.get('name')?.trim()) errors.name = 'required';
+    const email = data.get('email')?.trim();
+    if (!email) errors.email = 'required';
+    else if (!EMAIL.test(email)) errors.email = 'invalidEmail';
+    if (!data.get('message')?.trim()) errors.message = 'required';
+    return errors;
+  }
+
+  form?.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const data = new FormData(form);
+
+    ['name', 'email', 'message'].forEach((f) => showError(f, null));
+    const errors = validate(data);
+
+    if (Object.keys(errors).length) {
+      Object.entries(errors).forEach(([field, key]) => showError(field, key));
+      form.elements[Object.keys(errors)[0]]?.focus();
+      return;
+    }
+
+    button.disabled = true;
+    button.textContent = messages.sending;
+    status.textContent = '';
+
+    try {
+      const response = await fetch(form.action, {
+        method: 'POST',
+        headers: { Accept: 'application/json' },
+        body: data,
+      });
+
+      if (!response.ok) throw new Error(String(response.status));
+
+      form.reset();
+      status.dataset.state = 'success';
+      status.textContent = messages.success;
+    } catch {
+      status.dataset.state = 'error';
+      status.textContent = messages.error;
+    } finally {
+      button.disabled = false;
+      button.textContent = messages.submit;
+    }
+  });
+</script>
+
+<style>
+  .form {
+    display: grid;
+    gap: var(--space-6);
+    max-width: 40rem;
+  }
+
+  .form__row {
+    display: grid;
+    gap: var(--space-6);
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+  }
+
+  .form__honeypot {
+    position: absolute;
+    left: -9999px;
+    width: 1px;
+    height: 1px;
+    overflow: hidden;
+  }
+
+  .field {
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .field label {
+    font-size: var(--text-sm);
+    font-weight: 600;
+  }
+
+  .field input,
+  .field textarea {
+    min-height: var(--tap-target);
+    padding: var(--space-3);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-sm);
+    /* Inputs sit on the raised surface — recessed fields on an off-white
+       page read as disabled. See DESIGN.md §1. */
+    background: var(--color-surface-raised);
+    transition: border-color var(--duration-fast) var(--ease-out);
+  }
+
+  .field input:hover,
+  .field textarea:hover {
+    border-color: var(--color-ink-subtle);
+  }
+
+  .field [aria-invalid='true'] {
+    border-color: var(--color-error);
+    /* Colour is never the only error signal — see the icon + text below. */
+    box-shadow: inset 3px 0 0 var(--color-error);
+  }
+
+  .field__error {
+    display: flex;
+    align-items: center;
+    gap: var(--space-1);
+    color: var(--color-error);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+  }
+
+  /* Icon so the error is not signalled by colour alone. */
+  .field__error::before {
+    content: '⚠';
+    font-size: 0.9em;
+  }
+
+  .field__error:empty {
+    display: none;
+  }
+
+  .form__status[data-state='success'] {
+    color: var(--color-success);
+  }
+
+  .form__status[data-state='error'] {
+    color: var(--color-error);
+  }
+
+  /* .button / .button--primary come from global.css */
+  .form .button {
+    justify-self: start;
+  }
+</style>

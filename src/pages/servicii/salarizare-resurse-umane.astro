@@ -1,0 +1,98 @@
+---
+/**
+ * Salarizare — the third and last page carrying "Ploiești" in the title
+ * and H1.
+ *
+ * Payroll is bought separately from bookkeeping and often by firms who
+ * already have an accountant, so this page has to stand on its own rather
+ * than read as an add-on to the SRL page.
+ */
+import ServiceLayout from '@layouts/ServiceLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+---
+
+<ServiceLayout service="salarizare" serviceType="Salarizare și administrare de personal">
+  <p class="lede">
+    Facem statele de plată, ținem REVISAL-ul și depunem D112 pentru firme din
+    Ploiești și din județul Prahova. Lucrăm de la un salariat în sus.
+  </p>
+
+  <p>
+    Preluăm salarizarea și separat de contabilitate, dacă evidența contabilă
+    rămâne la altcineva. Este o situație frecventă: firma are un contabil
+    mulțumitor, dar salarizarea a devenit prea complicată pentru el sau prea
+    consumatoare de timp pentru administrator.
+  </p>
+
+  <h2>Ce facem lunar</h2>
+
+  <ul>
+    <li>Statul de plată și fluturașii individuali</li>
+    <li>Calculul contribuțiilor angajat și angajator</li>
+    <li>Declarația D112 și depunerea ei prin SPV</li>
+    <li>Ordinele de plată pentru salarii și pentru contribuții</li>
+    <li>Evidența concediilor de odihnă, medicale și fără plată</li>
+    <li>Certificate de venit și adeverințe, la cererea salariaților</li>
+  </ul>
+
+  <h2>Contracte și REVISAL</h2>
+
+  <p>
+    Registrul general de evidență a salariaților se transmite electronic, iar
+    termenele sunt scurte și rareori negociabile:
+  </p>
+
+  <ul>
+    <li>Un contract nou se transmite cel târziu <Tbd label="termen transmitere contract nou în REVISAL" /></li>
+    <li>Modificările contractuale — salariu, funcție, timp de lucru — se transmit <Tbd label="termen transmitere modificări" /></li>
+    <li>Încetarea contractului se transmite <Tbd label="termen transmitere încetare" /></li>
+  </ul>
+
+  <p>
+    Netransmiterea la termen se sancționează cu amendă de la
+    <Tbd label="cuantum amendă REVISAL" />. Ne ocupăm de transmitere în aceeași
+    zi în care primim documentele, tocmai pentru că marja de eroare este mică.
+  </p>
+
+  <h2>Întocmim și documentele, nu doar calculele</h2>
+
+  <ul>
+    <li>Contracte individuale de muncă și acte adiționale</li>
+    <li>Decizii de încetare, de suspendare și de modificare</li>
+    <li>Fișe de post</li>
+    <li>Regulamentul intern, dacă firma nu are unul</li>
+    <li>Dosarele de personal, ținute la zi pentru controale</li>
+  </ul>
+
+  <h2>Ce ne trebuie de la tine</h2>
+
+  <ul>
+    <li>Datele de identificare ale salariaților și copiile actelor</li>
+    <li>Salariile negociate și programul de lucru</li>
+    <li>Pontajul lunar sau confirmarea că luna a fost lucrată integral</li>
+    <li>Concediile medicale, în original</li>
+    <li>Accesul în REVISAL și în SPV, sau împuternicirea corespunzătoare</li>
+  </ul>
+
+  <p>
+    Dacă ai deja salariați, preluarea presupune și verificarea a ceea ce există:
+    ne uităm la contracte și la istoricul din REVISAL înainte de a prelua, iar
+    dacă găsim lipsuri îți spunem ce sunt și cum se îndreaptă.
+  </p>
+
+  <h2>Tarife</h2>
+
+  <p>
+    De la <Tbd label="tarif salarizare per salariat" /> lei pe salariat pe lună,
+    cu un minim de <Tbd label="tarif minim lunar salarizare" /> lei. Întocmirea
+    unui contract nou sau a unui act adițional:
+    <Tbd label="tarif document de personal" /> lei.
+  </p>
+
+  <p>
+    Evidența contabilă completă este descrisă pe pagina de
+    <a href="/servicii/contabilitate-srl">contabilitate pentru SRL</a>, iar
+    calendarul declarațiilor pe pagina de
+    <a href="/servicii/declaratii-fiscale-tva">declarații fiscale</a>.
+  </p>
+</ServiceLayout>

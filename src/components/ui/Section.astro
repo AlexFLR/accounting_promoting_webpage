@@ -1,0 +1,124 @@
+---
+/**
+ * The page's structural unit: a numbered register entry, and — on the
+ * homepage — a full-viewport snap block.
+ *
+ * Every section carries a marginal reference in a sticky left rail, with the
+ * content set against a hairline to its right. This is how a ledger, a
+ * statute or a set of financial statements is organised, and it is why the
+ * homepage does not read like the stack of centred headings and
+ * three-across cards that every other firm's site uses.
+ */
+import { homeSection } from '@/data/homeSections';
+import { getLangFromUrl } from '@i18n/utils';
+
+interface Props {
+  /** id from src/data/homeSections.ts — supplies index, label, title, theme. */
+  section: string;
+}
+
+const { section: id }: Props = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const s = homeSection(id);
+---
+
+<section
+  id={s.id}
+  class="entry snap-section"
+  data-section-theme={s.theme}
+  data-snap-section
+  aria-labelledby={`${s.id}-heading`}
+>
+  <div class="container entry__grid">
+    <div class="entry__rail" data-reveal>
+      {s.index && <span class="entry__index" aria-hidden="true">{s.index}</span>}
+      <span class="entry__label">{s.label[lang]}</span>
+    </div>
+
+    <div class="entry__body">
+      <h2 id={`${s.id}-heading`} data-reveal style="--reveal-i:1">{s.title?.[lang]}</h2>
+      <div data-reveal style="--reveal-i:2">
+        <slot />
+      </div>
+    </div>
+  </div>
+</section>
+
+<style>
+  .entry {
+    /* Vertically centred within the viewport block, but only while it fits —
+       `safe` stops a section taller than the screen from centring itself and
+       pushing its own top edge out of reach above the scroll origin. */
+    display: grid;
+    align-content: safe center;
+    /* Tight, because the height budget is the viewport. Top clears the
+       floating header and no more; every rem spent here is a rem the
+       content cannot use. */
+    padding-block: calc(var(--island-height) + var(--space-6)) var(--space-8);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .entry__grid {
+    display: grid;
+    grid-template-columns: 7rem minmax(0, 1fr);
+    gap: var(--space-8);
+    align-items: start;
+    width: 100%;
+  }
+
+  .entry__rail {
+    display: grid;
+    gap: var(--space-1);
+    padding-top: 0.35rem;
+  }
+
+  .entry__index {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-bold);
+    font-variant-numeric: tabular-nums;
+    color: var(--color-brand-500);
+    letter-spacing: 0.04em;
+  }
+
+  .entry__label {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    line-height: 1.4;
+  }
+
+  .entry__body {
+    min-width: 0;
+    border-left: 1px solid var(--color-line);
+    padding-left: var(--space-8);
+  }
+
+  .entry__body h2 {
+    margin-bottom: var(--space-5);
+    max-width: 22ch;
+  }
+
+  /* Below the breakpoint the rail becomes a running label above the heading. */
+  @media (max-width: 52rem) {
+    .entry__grid {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-4);
+    }
+
+    .entry__rail {
+      display: flex;
+      align-items: baseline;
+      gap: var(--space-3);
+      padding-top: 0;
+    }
+
+    .entry__body {
+      border-left: 0;
+      padding-left: 0;
+    }
+  }
+</style>

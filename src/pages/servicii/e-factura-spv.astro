@@ -1,0 +1,154 @@
+---
+/**
+ * e-Factura și SPV — the most substantial of the seven, and the only one
+ * written as a guide rather than a service page.
+ *
+ * Search intent here is overwhelmingly informational: people are looking for
+ * what the obligation is and by when, not for someone to sell them a
+ * subscription. A page that opens with an offer loses them in ten seconds.
+ * So the answer comes first and the service sits at the bottom, which is
+ * also what earns the links and the returning visits.
+ */
+import ServiceLayout from '@layouts/ServiceLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+---
+
+<ServiceLayout service="efactura" serviceType="Conformare e-Factura și SPV">
+  <p class="lede">
+    RO e-Factura este sistemul prin care facturile se transmit și se primesc
+    prin ANAF, nu direct între firme. Mai jos: cine are obligația, ce termene
+    se aplică, ce se întâmplă dacă nu respecți și ce poți face singur.
+  </p>
+
+  <h2>Ce este, pe scurt</h2>
+
+  <p>
+    O factură emisă în sistem nu mai este documentul pe care îl trimiți tu
+    clientului. O încarci în SPV, ANAF îi aplică sigiliul electronic, iar
+    factura validă este cea descărcată din sistem. Exemplarul tipărit sau
+    trimis pe email nu mai are valoare fiscală de sine stătătoare.
+  </p>
+
+  <p>
+    Consecința practică este că factura nu mai există pentru că ai emis-o, ci
+    pentru că a fost acceptată. O factură respinsă de sistem și necorectată
+    este, din punct de vedere fiscal, o factură care nu s-a emis.
+  </p>
+
+  <h2>Cine are obligația</h2>
+
+  <ul>
+    <li>Toate relațiile B2B între persoane impozabile stabilite în România</li>
+    <li>Relațiile B2G — livrările către instituții publice</li>
+    <li>Produsele cu risc fiscal ridicat, intrate în sistem înaintea celorlalte</li>
+    <li>De la <Tbd label="dată intrare B2C în sistem" />, și relațiile B2C</li>
+  </ul>
+
+  <p>
+    Obligația nu depinde de mărimea firmei și nu are prag de scutire. Se aplică
+    identic unui SRL cu un singur asociat și unei companii cu sute de angajați,
+    iar firmele cu capital străin nu fac excepție.
+  </p>
+
+  <h2>Termenele care contează</h2>
+
+  <ul>
+    <li>Transmiterea facturii în sistem: <Tbd label="termen transmitere factură în SPV" /> de la data emiterii</li>
+    <li>Corectarea unei facturi respinse: <Tbd label="termen corectare factură respinsă" /></li>
+    <li>Perioada de grație pentru sancțiuni: <Tbd label="perioadă de grație, dacă mai există" /></li>
+  </ul>
+
+  <h2>Sancțiuni</h2>
+
+  <p>
+    Netransmiterea în termen se sancționează cu amendă de la
+    <Tbd label="cuantum amendă netransmitere" />, în funcție de mărimea
+    contribuabilului.
+  </p>
+
+  <p>
+    Mai costisitor decât amenda este însă efectul asupra deducerii: o factură
+    primită în afara sistemului nu îți dă drept de deducere a TVA. Dacă un
+    furnizor îți trimite factura doar pe email și nu o încarcă, problema devine
+    a ta la primul control — nu a lui.
+  </p>
+
+  <h2>Ce înseamnă înrolarea în SPV</h2>
+
+  <p>
+    SPV — Spațiul Privat Virtual — este canalul prin care firma comunică
+    electronic cu ANAF. Fără el nu poți nici transmite facturi, nici primi
+    notificări, nici depune declarații.
+  </p>
+
+  <p>
+    Înrolarea se face cu certificat digital calificat, obținut de la un
+    furnizor acreditat, pe numele administratorului sau al unui împuternicit.
+    Costă în jur de <Tbd label="cost certificat digital calificat" /> lei pe an
+    și durează <Tbd label="durată obținere certificat" />.
+  </p>
+
+  <h2>Ce poți face singur</h2>
+
+  <p>
+    Pentru o firmă care emite câteva facturi pe lună, aplicația gratuită pusă
+    la dispoziție de ANAF este suficientă. Nu ai nevoie de noi pentru asta, și
+    nu are rost să plătești pe cineva pentru zece facturi.
+  </p>
+
+  <p>
+    Merită externalizat când apare unul dintre următoarele: volumul depășește
+    ce poți încărca manual fără să greșești, facturezi din alt program și vrei
+    transmitere automată, ai furnizori care nu încarcă și trebuie urmăriți, sau
+    ai deja facturi respinse pe care nu știi cum să le corectezi.
+  </p>
+
+  <h2>Ce facem noi</h2>
+
+  <ul>
+    <li>Înrolarea în SPV, inclusiv obținerea certificatului digital</li>
+    <li>Transmiterea facturilor emise și verificarea stării fiecăreia</li>
+    <li>Descărcarea facturilor primite și corelarea lor cu evidența contabilă</li>
+    <li>Urmărirea furnizorilor care nu au încărcat facturile în sistem</li>
+    <li>Corectarea facturilor respinse, în termen</li>
+    <li>Conectarea programului tău de facturare la sistem, unde este posibil</li>
+  </ul>
+
+  <p>
+    Pentru clienții cu abonament de
+    <a href="/servicii/contabilitate-srl">contabilitate</a>, preluarea
+    facturilor din SPV este inclusă — este oricum modul în care ajungem la
+    documentele tale.
+  </p>
+
+  <h2>Tarife</h2>
+
+  <p>
+    Înrolare în SPV și configurare inițială:
+    <Tbd label="tarif înrolare SPV" /> lei, o singură dată. Transmitere și
+    monitorizare lunară: de la <Tbd label="tarif lunar e-Factura" /> lei, în
+    funcție de numărul de facturi.
+  </p>
+
+  <h2>Întrebări frecvente</h2>
+
+  <h3>Dacă am emis o factură greșit, ce fac?</h3>
+  <p>
+    O factură transmisă și acceptată nu se șterge. Se corectează printr-o
+    factură de storno transmisă tot prin sistem, urmată de emiterea celei
+    corecte.
+  </p>
+
+  <h3>Clientul îmi cere factura pe email. Mai trimit?</h3>
+  <p>
+    Poți, dar ca document informativ. Factura care contează este cea din
+    sistem, iar clientul o are acolo indiferent dacă i-o trimiți sau nu.
+  </p>
+
+  <h3>Am o firmă fără activitate. Mă privește?</h3>
+  <p>
+    Obligația de transmitere apare doar dacă emiți facturi. Înrolarea în SPV
+    rămâne însă utilă, pentru că prin el primești notificările ANAF — inclusiv
+    pe cele care anunță o problemă.
+  </p>
+</ServiceLayout>

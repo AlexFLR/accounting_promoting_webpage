@@ -1,0 +1,128 @@
+---
+/**
+ * Services, sized to one viewport.
+ *
+ * Short labels, not the pages' H1s. The H1s are written for search and run
+ * to sixty characters — seven of those in a column reads as a wall of long
+ * underlined sentences, which is exactly what this looked like before.
+ *
+ * Four groups across the full width, each a short ruled list. The visitor
+ * gets the shape of the offering; anyone who wants detail follows a link.
+ */
+import Section from '@components/ui/Section.astro';
+import { servicesByGroup, copy } from '@/data/services';
+import { pathFor, getLangFromUrl, useTranslations } from '@i18n/utils';
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const groups = servicesByGroup(lang);
+const hubHref = pathFor('services', lang);
+---
+
+<Section section="ce-facem">
+  <div class="groups" style={`--cols:${Math.min(groups.length, 4)}`}>
+    {
+      groups.map((group) => (
+        <section class="tgroup">
+          <h3 class="tgroup__label">{group.label}</h3>
+          <ul>
+            {group.items.map((service) => {
+              const c = copy(service, lang)!;
+              return (
+                <li>
+                  <a href={`${hubHref}/${c.slug}`}>{c.short}</a>
+                </li>
+              );
+            })}
+          </ul>
+        </section>
+      ))
+    }
+  </div>
+
+  {t('home.enOnlyNote') && <p class="scope">{t('home.enOnlyNote')}</p>}
+
+  <p class="after">
+    <a href={hubHref}>{t('home.allServices')}</a>
+  </p>
+</Section>
+
+<style>
+  /* Four columns across the full body width — the previous two-column
+     version left the content crammed into half the available space. */
+  .groups {
+    display: grid;
+    grid-template-columns: repeat(var(--cols, 4), minmax(0, 1fr));
+    /* Keeps columns from stretching absurdly wide when there are only two. */
+    max-width: calc(var(--cols, 4) * 17rem);
+    gap: var(--space-8);
+  }
+
+  @media (max-width: 64rem) {
+    .groups {
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: var(--space-6) var(--space-8);
+    }
+  }
+
+  @media (max-width: 34rem) {
+    .groups {
+      grid-template-columns: minmax(0, 1fr);
+      gap: var(--space-5);
+    }
+  }
+
+  .tgroup__label {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    margin: 0 0 var(--space-3);
+    padding-bottom: var(--space-3);
+    border-bottom: 1px solid var(--color-ink);
+    /* Two-word group names must not shunt the lists out of alignment. */
+    min-height: 3.25em;
+    display: flex;
+    align-items: flex-end;
+  }
+
+  .tgroup ul {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  /* Names, not sentences — so they read as a list rather than as prose. */
+  .tgroup a {
+    display: block;
+    color: var(--color-ink);
+    text-decoration: none;
+    font-family: var(--font-display);
+    font-size: var(--text-lg);
+    line-height: 1.25;
+    text-wrap: balance;
+  }
+
+  .tgroup a:hover {
+    color: var(--color-brand-500);
+  }
+
+  .scope {
+    margin-top: var(--space-8);
+    max-width: 52ch;
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .after {
+    margin-top: var(--space-12);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-line);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+  }
+</style>

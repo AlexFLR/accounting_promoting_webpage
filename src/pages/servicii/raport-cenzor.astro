@@ -1,0 +1,110 @@
+---
+/**
+ * Raport de cenzor — written for a NATIONAL audience.
+ *
+ * Local search volume for this is effectively zero and so is the
+ * competition, which inverts the usual logic: there is no point optimising
+ * for "cenzor Ploiești" when the whole country's monthly volume would fit in
+ * a morning. So the copy addresses the entities that have the obligation,
+ * wherever they are, and `areaServed` is România rather than Prahova.
+ */
+import ServiceLayout from '@layouts/ServiceLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+---
+
+<ServiceLayout
+  service="raport-cenzor"
+  serviceType="Servicii de cenzor"
+  areaServed={['România']}
+>
+  <p class="lede">
+    Preluăm mandate de cenzor și întocmim raportul anual pentru asociații,
+    fundații, cooperative și societăți care au această obligație legală.
+    Lucrăm în toată țara — mandatul nu presupune prezență permanentă.
+  </p>
+
+  <h2>Cine are nevoie de cenzor</h2>
+
+  <p>
+    Obligația apare în câteva situații distincte, iar multe entități află de ea
+    târziu, de obicei când depun bilanțul sau când o instituție le cere
+    raportul:
+  </p>
+
+  <ul>
+    <li>Asociațiile și fundațiile cu peste <Tbd label="prag membri asociație pentru cenzor" /> membri, sau care depășesc <Tbd label="prag venituri/active ONG" /></li>
+    <li>Societățile pe acțiuni, unde comisia de cenzori este cerută de lege</li>
+    <li>Societățile cu răspundere limitată cu peste <Tbd label="prag asociați SRL pentru cenzor" /> asociați</li>
+    <li>Cooperativele agricole și societățile cooperative, potrivit statutului</li>
+    <li>Entitățile al căror act constitutiv prevede cenzor, indiferent de praguri</li>
+  </ul>
+
+  <p>
+    Dacă nu ești sigur în ce categorie intri, trimite-ne actul constitutiv și
+    ultimul bilanț — îți spunem dacă obligația există, fără costuri.
+  </p>
+
+  <h2>Ce presupune mandatul</h2>
+
+  <ul>
+    <li>Verificarea situațiilor financiare anuale înainte de aprobare</li>
+    <li>Verificarea modului în care este administrat patrimoniul</li>
+    <li>Controlul gestiunii și verificarea concordanței cu evidența contabilă</li>
+    <li>Participarea la ședințele organului de conducere, când este cerută</li>
+    <li>Raportul de cenzor, prezentat adunării generale</li>
+  </ul>
+
+  <p>
+    Raportul nu este o formalitate care se semnează la sfârșit. Un cenzor care
+    semnează fără să verifice își asumă o răspundere personală reală, iar
+    entitatea rămâne cu un document care nu o protejează în niciun fel.
+  </p>
+
+  <h2>Cenzor, nu auditor</h2>
+
+  <p>
+    Cele două nu se confundă și nu se substituie. Auditul statutar este o
+    misiune reglementată separat, cu standarde proprii, obligatorie peste
+    pragurile prevăzute de lege. Cenzoratul este o funcție statutară, mai puțin
+    formalizată și mult mai puțin costisitoare.
+  </p>
+
+  <p>
+    Dacă entitatea ta depășește pragurile de audit — <Tbd label="praguri audit statutar" /> —
+    ai nevoie de auditor, nu de cenzor, și îți spunem asta din prima discuție
+    în loc să îți vindem lucrarea greșită.
+  </p>
+
+  <h2>Cum lucrăm la distanță</h2>
+
+  <p>
+    Documentele se transmit scanat, iar discuțiile se pot ține online. Deplasarea
+    fizică este necesară doar dacă statutul prevede prezența la adunarea
+    generală. Din biroul nostru din Ploiești am lucrat cu entități din
+    <Tbd label="județe / orașe unde ați avut mandate" />.
+  </p>
+
+  <h2>Ce ne trebuie pentru o ofertă</h2>
+
+  <ul>
+    <li>Actul constitutiv și statutul, cu modificările la zi</li>
+    <li>Ultimele situații financiare depuse</li>
+    <li>Numărul de membri sau de asociați</li>
+    <li>Hotărârea de numire, dacă există deja</li>
+  </ul>
+
+  <h2>Tarife</h2>
+
+  <p>
+    Mandatul anual pornește de la <Tbd label="tarif mandat cenzor anual" /> lei
+    și depinde de mărimea entității și de volumul operațiunilor. Pentru un
+    raport punctual, fără mandat pe durata întregului exercițiu, tariful este
+    <Tbd label="tarif raport punctual" /> lei.
+  </p>
+
+  <p>
+    Situațiile financiare pe care le verifică cenzorul sunt descrise pe pagina
+    de <a href="/servicii/bilant-situatii-financiare">bilanț și situații
+    financiare</a>.
+  </p>
+</ServiceLayout>

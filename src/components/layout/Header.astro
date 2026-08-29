@@ -1,0 +1,685 @@
+---
+/**
+ * The floating "island" header — a pill detached from the top edge, in the
+ * spirit of the iPhone Dynamic Island. Rationale in /DESIGN.md §6.
+ *
+ * Structure notes:
+ * - <header> spans the viewport but is pointer-events:none, so the gutter
+ *   either side of the pill stays clickable. The pill re-enables them.
+ * - The pill is width:fit-content — being only as wide as its contents is
+ *   what makes it read as an island rather than a bar.
+ */
+import { getLangFromUrl, useTranslations, pathFor, type Lang } from '@i18n/utils';
+import LanguagePicker from './LanguagePicker.astro';
+import Logo from '@components/ui/Logo.astro';
+import { site } from '@/data/site';
+import { navItems, type NavItem } from '@/data/nav';
+
+interface Props {
+  /** Locales the current page exists in — passed straight to the switch. */
+  locales?: Lang[];
+}
+
+const { locales }: Props = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const current = Astro.url.pathname;
+const homeHref = pathFor('home', lang);
+
+const withSlash = (p: string) => (p.endsWith('/') ? p : `${p}/`);
+
+/**
+ * The home link must match its own page and nothing else.
+ *
+ * A prefix test cannot be used for it: in Romanian home is `/`, and in
+ * English it is `/en/` — which every other English URL starts with, so
+ * `startsWith` lit "Home" up on every page of the English site. The old
+ * special case only covered the literal `/`, so the bug was invisible until
+ * a second locale existed.
+ */
+function isCurrent(href: string) {
+  if (href === homeHref) return withSlash(current) === withSlash(homeHref);
+  return withSlash(current).startsWith(withSlash(href));
+}
+
+/**
+ * Resolve the nav to plain data here rather than in the template — a type
+ * assertion like `as Parameters<typeof t>[0]` inside JSX gets parsed as an
+ * opening tag by the Astro compiler.
+ */
+type ResolvedItem = {
+  href: string;
+  label: string;
+  current: boolean;
+  children?: { href: string; label: string; current: boolean }[];
+};
+
+const items: ResolvedItem[] = navItems[lang].map((item: NavItem) => {
+  const children = item.children?.map((child) => {
+    const href = pathFor(child.key, lang);
+    return { href, label: t(`nav.${child.key}`), current: isCurrent(href) };
+  });
+
+  return {
+    // A group points at its first child: there is no hover on touch, so a
+    // label that goes nowhere is a dead tap.
+    href: children ? children[0].href : pathFor(item.key, lang),
+    label: t(`nav.${item.key}`),
+    current: children ? children.some((c) => c.current) : isCurrent(pathFor(item.key, lang)),
+    children,
+  };
+});
+---
+
+{/* Sentinel: when this scrolls out of view the island tightens. */}
+<div data-island-sentinel aria-hidden="true"></div>
+
+<header class="masthead">
+  <div class="island" data-island>
+    {/* aria-label carries the full legal name, so the mark and the wordmark
+        can both be hidden from assistive tech — otherwise the name is
+        announced twice, and again when the wordmark collapses on scroll. */}
+    {/* Name first, mark second. On scroll the name collapses and the mark is
+        what is left holding the left edge — so the mark must sit on the side
+        the name collapses toward, or the logo would jump across the gap. */}
+    <a class="island__brand" href={pathFor('home', lang)} aria-label={site.name}>
+      {/* The extra wrapper is what makes the collapse smooth — see the
+          grid-template-columns note in the stylesheet. */}
+      <span class="island__nameWrap" aria-hidden="true">
+        <span class="island__name">{site.shortName}</span>
+      </span>
+      <Logo size="1.6rem" class="island__mark" />
+    </a>
+
+    <nav class="island__nav" id="primary-nav" aria-label="Primary">
+      <ul class="island__list">
+        {
+          items.map((item) =>
+            item.children ? (
+              /* The submenu opens on hover and on :focus-within — no
+                 JavaScript, and keyboard-reachable by tabbing through it. */
+              <li class="island__group">
+                <a href={item.href} aria-current={item.current ? 'true' : undefined}>
+                  {item.label}
+                  <svg
+                    class="island__chevron"
+                    viewBox="0 0 12 12"
+                    width="10"
+                    height="10"
+                    fill="none"
+                    stroke="currentColor"
+                    stroke-width="2"
+                    stroke-linecap="round"
+                    stroke-linejoin="round"
+                    aria-hidden="true"
+                  >
+                    <path d="M3 4.5 6 7.5 9 4.5" />
+                  </svg>
+                </a>
+
+                <ul class="island__sub">
+                  {item.children.map((child) => (
+                    <li>
+                      <a href={child.href} aria-current={child.current ? 'page' : undefined}>
+                        {child.label}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </li>
+            ) : (
+              <li>
+                <a href={item.href} aria-current={item.current ? 'page' : undefined}>
+                  {item.label}
+                </a>
+              </li>
+            )
+          )
+        }
+      </ul>
+    </nav>
+
+    <div class="island__end">
+      <LanguagePicker locales={locales} />
+      <a class="button button--primary island__cta" href={pathFor('contact', lang)}>
+        {t('nav.cta')}
+      </a>
+    </div>
+
+    <button
+      class="island__toggle"
+      type="button"
+      aria-expanded="false"
+      aria-controls="primary-nav"
+      data-island-toggle
+    >
+      <span class="sr-only">Menu</span>
+      <svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+        <path class="island__bar island__bar--top" d="M4 8h16" />
+        <path class="island__bar island__bar--bottom" d="M4 16h16" />
+      </svg>
+    </button>
+  </div>
+</header>
+
+<style>
+  /* ── Shell ────────────────────────────────────────────────────────────*/
+  .masthead {
+    position: fixed;
+    top: 0;
+    inset-inline: 0;
+    z-index: 50;
+    display: flex;
+    justify-content: center;
+    padding: var(--space-4) var(--space-6) 0;
+    pointer-events: none;
+  }
+
+  /**
+   * ── Two states ────────────────────────────────────────────────────────
+   *
+   * At rest this is not an island at all: a full-width bar, no background,
+   * no border, no shadow, sitting directly on the page. Once content starts
+   * passing underneath it contracts into the floating pill and picks up the
+   * glass, the border and the shadow.
+   *
+   * The width animates via `max-width` between two lengths. `width: auto`
+   * and `fit-content` cannot be interpolated, so a pill sized purely by its
+   * contents would snap rather than contract. Clamping a full-width flex row
+   * with `justify-content: space-between` gives the same look and does
+   * animate — the children slide inward as the clamp tightens.
+   */
+  .island {
+    pointer-events: auto;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: var(--space-6);
+    width: 100%;
+    max-width: var(--width-container);
+    min-height: var(--island-height);
+    padding: var(--space-2) 0;
+
+    border: 1px solid transparent;
+    border-radius: 0;
+    background: transparent;
+    box-shadow: none;
+
+    /**
+     * Slow and soft on purpose. At 220ms with an ease-out curve this read as
+     * a snap: ease-out puts most of the movement in the first few frames,
+     * which is right for something the user just clicked and wrong for
+     * something happening on its own while they scroll.
+     *
+     * 520ms with a symmetric ease-in-out means the contraction starts gently
+     * instead of lurching. The surface properties are given a longer, offset
+     * fade so the glass and shadow arrive after the shape has begun moving,
+     * rather than everything switching on the same frame.
+     */
+    --island-move: 520ms cubic-bezier(0.4, 0, 0.2, 1);
+    --island-fade: 620ms cubic-bezier(0.4, 0, 0.2, 1) 80ms;
+
+    transition:
+      max-width var(--island-move),
+      min-height var(--island-move),
+      padding var(--island-move),
+      gap var(--island-move),
+      border-radius var(--island-fade),
+      border-color var(--island-fade),
+      background-color var(--island-fade),
+      box-shadow var(--island-fade);
+  }
+
+  /**
+   * Scrolled: contract into the pill.
+   *
+   * `justify-content` stays `space-between`, so the mark holds the left end
+   * of the pill and the language switch + CTA hold the right, with the nav
+   * between them. Keeping the gaps tight is therefore a matter of the pill
+   * being close to its content width rather than of the `gap` value —
+   * space-between will spread the groups across whatever width it is given.
+   *
+   * 32rem is tuned to sit just above the natural content width (~28.5rem in
+   * Romanian). It is the one number to adjust: raise it if the nav ever
+   * clips, lower it if the groups start drifting apart.
+   */
+  .island[data-scrolled] {
+    max-width: min(32rem, 100%);
+    gap: var(--space-4);
+    min-height: 3rem;
+    padding: var(--space-1) var(--space-1) var(--space-1) var(--space-3);
+    border-color: var(--island-border);
+    border-radius: var(--radius-pill);
+    background: var(--island-bg);
+    box-shadow: var(--shadow-island-scrolled);
+  }
+
+  /* Tighten the groups' internal spacing to match. */
+  .island[data-scrolled] .island__list {
+    gap: var(--space-4);
+  }
+
+  .island[data-scrolled] .island__end {
+    gap: var(--space-2);
+  }
+
+  /* The CTA loses a little padding and height so it fits the shorter pill. */
+  .island[data-scrolled] .island__cta {
+    min-height: 2.25rem;
+    padding-inline: var(--space-4);
+  }
+
+  /* These only ever render at >=48rem, where the nav and the switch are
+     visible — below that both are hidden behind the toggle, which keeps its
+     full 44px target. So the reduced height never applies on touch. */
+  .island[data-scrolled] .island__list a,
+  .island[data-scrolled] :global(.lang__link) {
+    min-height: 2.25rem;
+  }
+
+  .island[data-scrolled] :global(.lang__link) {
+    min-width: 2.25rem;
+  }
+
+  /* Glass, and only once the pill exists — blurring a transparent bar at the
+     top of the page would smear the hero behind an invisible rectangle. */
+  @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
+    .island[data-scrolled] {
+      -webkit-backdrop-filter: blur(16px) saturate(180%);
+      backdrop-filter: blur(16px) saturate(180%);
+    }
+  }
+
+  @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+    .island[data-scrolled] {
+      background: var(--island-bg-solid);
+    }
+  }
+
+  /* ── Brand ────────────────────────────────────────────────────────────*/
+  .island__brand {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    color: var(--color-ink);
+    text-decoration: none;
+    font-weight: var(--weight-bold);
+    font-size: var(--text-sm);
+    letter-spacing: -0.01em;
+    white-space: nowrap;
+  }
+
+  /* The mark inherits --logo-ink / --logo-blue from tokens, so it follows
+     the scheme without swapping files. Its own blue is the ONLY place
+     #2E7BB4 appears at full strength — it fails 4.5:1 as text, but as a
+     9px-stroke graphic it clears the 3:1 that non-text content requires. */
+  .island__mark {
+    /* Spacing comes from .island__brand's gap, which collapses on scroll. */
+    margin: 0;
+  }
+
+  /**
+   * The sentinel decides when the bar becomes the pill. Absolutely
+   * positioned so its height costs no layout — it exists only to be watched.
+   * 5rem of height means the bar holds its full-width state through the
+   * first bit of scroll instead of snapping at the first pixel.
+   */
+  [data-island-sentinel] {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 1px;
+    height: 9rem;
+    pointer-events: none;
+  }
+
+  /**
+   * The wordmark collapses on scroll, leaving only the mark — the island
+   * earns its width back for the nav once you are reading.
+   *
+   * Animating `max-width` rather than `width`: the text has no fixed width,
+   * and `width: auto` is not animatable. The value only needs to exceed the
+   * real width; the transition still reads as a smooth collapse because the
+   * text is clipped by `overflow: hidden` as it goes.
+   *
+   * It is aria-hidden either way, so nothing is removed from the
+   * accessibility tree mid-scroll — the brand link's aria-label is stable.
+   */
+  /**
+   * The wordmark collapses by animating `grid-template-columns` from `1fr`
+   * to `0fr`, not by animating `max-width`.
+   *
+   * max-width was the clunky version: the value has to be a guess larger
+   * than the real text, so the first third of the transition changed nothing
+   * visible and then the text started getting chopped mid-word. `1fr → 0fr`
+   * animates the ACTUAL measured width, so the collapse is even from the
+   * first frame and needs no magic number.
+   *
+   * The fade runs shorter and unde­layed on purpose: the text is gone before
+   * the clip closes on it, so you never watch letters being sliced.
+   */
+  .island__nameWrap {
+    display: grid;
+    grid-template-columns: 1fr;
+    transition:
+      grid-template-columns var(--island-move),
+      opacity 200ms cubic-bezier(0.4, 0, 1, 1);
+  }
+
+  .island__name {
+    overflow: hidden;
+    white-space: nowrap;
+    min-width: 0;
+  }
+
+  .island[data-scrolled] .island__nameWrap {
+    grid-template-columns: 0fr;
+    opacity: 0;
+  }
+
+  /* Collapse the gap on the same clock, or the mark keeps a phantom space. */
+  .island__brand {
+    transition: gap var(--island-move);
+  }
+
+  .island[data-scrolled] .island__brand {
+    gap: 0;
+  }
+
+  /* ── Nav ──────────────────────────────────────────────────────────────*/
+  .island__list {
+    display: flex;
+    align-items: center;
+    gap: var(--space-5);
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .island__list a {
+    display: inline-flex;
+    align-items: center;
+    min-height: var(--tap-target);
+    padding-inline: var(--space-1);
+    color: var(--color-ink-muted);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+    text-decoration: none;
+    white-space: nowrap;
+    transition: color var(--duration-fast) var(--ease-out);
+  }
+
+  .island__list a:hover {
+    color: var(--color-ink);
+  }
+
+  /* Current page: colour AND weight AND an underline — never colour alone. */
+  .island__list a[aria-current='page'] {
+    color: var(--color-brand-500);
+    text-decoration: underline;
+    text-decoration-thickness: 2px;
+    text-underline-offset: 0.4em;
+  }
+
+  /* ── Group + submenu ──────────────────────────────────────────────────
+     No JavaScript. The submenu opens on hover (pointer devices only, so it
+     cannot stick after a tap) and on :focus-within, which is what makes it
+     keyboard-reachable — you tab into the parent, the panel opens, you keep
+     tabbing into the children. */
+  .island__group {
+    position: relative;
+  }
+
+  .island__group > a {
+    gap: var(--space-1);
+  }
+
+  .island__chevron {
+    transition: transform var(--duration-fast) var(--ease-out);
+  }
+
+  .island__sub {
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    translate: -50% 0;
+    min-width: max-content;
+    margin: 0;
+    padding: var(--space-2);
+    list-style: none;
+    display: grid;
+    gap: var(--space-1);
+
+    background: var(--island-bg-solid);
+    border: 1px solid var(--island-border);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-md);
+
+    /* Hidden without removing it from the layout, so the width is stable and
+       the first hover does not jump. `visibility` keeps it out of the tab
+       order while closed. */
+    opacity: 0;
+    visibility: hidden;
+    translate: -50% -0.25rem;
+    transition:
+      opacity var(--duration-fast) var(--ease-out),
+      translate var(--duration-fast) var(--ease-out),
+      visibility var(--duration-fast);
+  }
+
+  .island__group:focus-within > .island__sub {
+    opacity: 1;
+    visibility: visible;
+    translate: -50% 0;
+  }
+
+  .island__group:focus-within .island__chevron {
+    transform: rotate(180deg);
+  }
+
+  @media (hover: hover) {
+    .island__group:hover > .island__sub {
+      opacity: 1;
+      visibility: visible;
+      translate: -50% 0;
+    }
+
+    .island__group:hover .island__chevron {
+      transform: rotate(180deg);
+    }
+  }
+
+  .island__sub a {
+    display: block;
+    padding: var(--space-2) var(--space-3);
+    border-radius: var(--radius-sm);
+    min-height: auto;
+  }
+
+  .island__sub a:hover {
+    background: var(--color-surface-sunken);
+  }
+
+  .island__end {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  /* ── Mobile toggle ────────────────────────────────────────────────────*/
+  .island__toggle {
+    display: none;
+    place-items: center;
+    width: var(--tap-target);
+    height: var(--tap-target);
+    padding: 0;
+    border: 0;
+    border-radius: var(--radius-pill);
+    background: transparent;
+    color: var(--color-ink);
+    cursor: pointer;
+  }
+
+  .island__bar {
+    transition: transform var(--duration-base) var(--ease-out);
+    transform-origin: center;
+  }
+
+  [aria-expanded='true'] .island__bar--top {
+    transform: translateY(4px) rotate(45deg);
+  }
+
+  [aria-expanded='true'] .island__bar--bottom {
+    transform: translateY(-4px) rotate(-45deg);
+  }
+
+  /* ── Collapsed state ──────────────────────────────────────────────────*/
+  @media (max-width: 48rem) {
+    /* Same two states, narrower: full-width bar at rest, tighter pill once
+       scrolled. The width is not pinned here — that would defeat the
+       transition the desktop layout depends on. */
+    .island {
+      gap: var(--space-3);
+    }
+
+    .island[data-scrolled] {
+      max-width: min(17rem, 100%);
+      padding-right: var(--space-1);
+    }
+
+    /* Expanded, the panel needs the full width back regardless of scroll. */
+    .island[data-open] {
+      max-width: min(26rem, 100%);
+    }
+
+    .island__toggle {
+      display: grid;
+    }
+
+    /* Nav and CTA fold into the expanded panel */
+    .island__nav,
+    .island__end {
+      display: none;
+    }
+
+    /* Expanded: the pill grows downward into a rounded card. The island
+       metaphor holds rather than degrading into a hamburger bar. */
+    /* An open panel always needs its own surface — at the top of the page
+       the bar is transparent, and a menu expanding over the hero with no
+       background behind it would be unreadable. */
+    .island[data-open] {
+      flex-wrap: wrap;
+      border-radius: var(--radius-lg);
+      padding: var(--space-2) var(--space-2) var(--space-4) var(--space-4);
+      background: var(--island-bg-solid);
+      border-color: var(--island-border);
+      box-shadow: var(--shadow-lg);
+    }
+
+    /* The wordmark stays while the menu is open, whatever the scroll state —
+       a bare mark above an open panel reads as unlabelled. */
+    .island[data-open] .island__name {
+      max-width: 12rem;
+      opacity: 1;
+    }
+
+    .island[data-open] .island__brand {
+      gap: var(--space-3);
+    }
+
+    .island[data-open] .island__nav,
+    .island[data-open] .island__end {
+      display: flex;
+      flex-basis: 100%;
+      padding-top: var(--space-3);
+      border-top: 1px solid var(--island-border);
+    }
+
+    .island[data-open] .island__list {
+      flex-direction: column;
+      align-items: stretch;
+      width: 100%;
+      gap: 0;
+    }
+
+    /* In the expanded panel the submenu is not a popover — it is always
+       open, indented under its parent. Nothing on touch depends on hover. */
+    .island__group {
+      position: static;
+    }
+
+    .island__sub {
+      position: static;
+      opacity: 1;
+      visibility: visible;
+      translate: none;
+      transition: none;
+      min-width: 0;
+      padding: 0 0 0 var(--space-4);
+      margin-left: var(--space-2);
+      border: 0;
+      border-left: 1px solid var(--color-line);
+      border-radius: 0;
+      box-shadow: none;
+      background: transparent;
+    }
+
+    .island__chevron {
+      display: none;
+    }
+
+    .island[data-open] .island__end {
+      justify-content: space-between;
+      padding-right: var(--space-3);
+    }
+
+    .island__cta {
+      flex: 1;
+      margin-left: var(--space-4);
+    }
+  }
+
+  @media (max-width: 26rem) {
+    .island__name {
+      display: none;
+    }
+  }
+</style>
+
+<script>
+  const island = document.querySelector<HTMLElement>('[data-island]');
+  const toggle = document.querySelector<HTMLButtonElement>('[data-island-toggle]');
+  const sentinel = document.querySelector<HTMLElement>('[data-island-sentinel]');
+
+  /* Scroll state via IntersectionObserver rather than a scroll listener —
+     no work on the main thread per frame. */
+  if (island && sentinel) {
+    new IntersectionObserver(
+      ([entry]) => island.toggleAttribute('data-scrolled', !entry.isIntersecting),
+      { rootMargin: '0px' }
+    ).observe(sentinel);
+  }
+
+  /* Progressive enhancement: without JS the nav is still a plain list. */
+  toggle?.addEventListener('click', () => {
+    const open = island?.toggleAttribute('data-open') ?? false;
+    toggle.setAttribute('aria-expanded', String(open));
+  });
+
+  document.addEventListener('keydown', (event) => {
+    if (event.key === 'Escape' && island?.hasAttribute('data-open')) {
+      island.removeAttribute('data-open');
+      toggle?.setAttribute('aria-expanded', 'false');
+      toggle?.focus();
+    }
+  });
+
+  document.addEventListener('click', (event) => {
+    if (!island?.hasAttribute('data-open')) return;
+    if (island.contains(event.target as Node)) return;
+    island.removeAttribute('data-open');
+    toggle?.setAttribute('aria-expanded', 'false');
+  });
+</script>

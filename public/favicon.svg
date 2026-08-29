@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 160 132" fill="none">
+  <title>Valvio</title>
+  <!--
+    Theme-aware favicon. CSS cannot reach a favicon from the page, but an SVG
+    favicon carries its own stylesheet, so prefers-color-scheme works inside
+    it. This is why the mark stays legible against a dark browser chrome.
+  -->
+  <style>
+    .ink { stroke: #0A1F33; fill: #0A1F33; }
+    .ink-line { stroke: #0A1F33; }
+    .blue { stroke: #2E7BB4; }
+    @media (prefers-color-scheme: dark) {
+      .ink { stroke: #DCE8F2; fill: #DCE8F2; }
+      .ink-line { stroke: #DCE8F2; }
+      .blue { stroke: #7FB3D5; }
+    }
+  </style>
+  <polygon class="ink" points="22,66 114,66 68,122" stroke-width="9" stroke-linejoin="miter" stroke-miterlimit="10"/>
+  <polygon class="blue" points="46,66 138,66 92,10" fill="none" stroke-width="9" stroke-linejoin="miter" stroke-miterlimit="10"/>
+  <path class="ink-line" d="M10 66 H150" stroke-width="9" stroke-linecap="butt"/>
+</svg>

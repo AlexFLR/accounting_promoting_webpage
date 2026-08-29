@@ -1,0 +1,125 @@
+---
+/**
+ * Contabilitate SRL — one of the three pages carrying "Ploiești" in the
+ * title and H1.
+ *
+ * Plătitor and neplătitor de TVA are two sections of this page rather than
+ * two pages: it is one searcher deciding between two states of the same
+ * service, and splitting it would give two thin pages competing for
+ * overlapping queries instead of one that answers the question.
+ */
+import ServiceLayout from '@layouts/ServiceLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+---
+
+<ServiceLayout service="srl" serviceType="Contabilitate financiară">
+  <p class="lede">
+    Ținem evidența contabilă a societăților cu răspundere limitată din Ploiești și din
+    județul Prahova: înregistrăm documentele, calculăm taxele, depunem declarațiile la
+    termen și îți spunem lunar unde stă firma.
+  </p>
+
+  <p>
+    Lucrăm atât cu firme la început de activitate, cât și cu firme care au deja istoric
+    și vor să schimbe contabilul. Preluarea se face în <Tbd label="durata preluării" /> și
+    nu presupune întreruperea activității: cerem balanța și registrele de la contabilul
+    anterior, verificăm soldurile și continuăm de acolo.
+  </p>
+
+  <h2>Ce include serviciul lunar</h2>
+
+  <ul>
+    <li>Înregistrarea documentelor primare: facturi emise și primite, chitanțe, bonuri, extrase bancare, deconturi</li>
+    <li>Registrul-jurnal, registrul-inventar și cartea mare</li>
+    <li>Calculul impozitului pe profit sau pe veniturile microîntreprinderilor, în funcție de regimul firmei</li>
+    <li>Evidența mijloacelor fixe și calculul amortizării</li>
+    <li>Depunerea declarațiilor prin Spațiul Privat Virtual</li>
+    <li>Balanța de verificare lunară, împreună cu o situație scurtă a sumelor de plată și a termenelor</li>
+    <li>Răspuns la solicitările și notificările ANAF</li>
+  </ul>
+
+  <p>
+    Dacă firma are salariați, salarizarea și declarația D112 se adaugă separat — sunt
+    descrise pe pagina de <a href="/servicii/salarizare-resurse-umane">salarizare și
+    resurse umane</a>.
+  </p>
+
+  <h2>SRL plătitor de TVA</h2>
+
+  <p>
+    Pentru o firmă înregistrată în scopuri de TVA, la lucrările lunare se adaugă evidența
+    și raportarea taxei:
+  </p>
+
+  <ul>
+    <li>Jurnalul de vânzări și jurnalul de cumpărări</li>
+    <li>Decontul de TVA (D300), lunar sau trimestrial, în funcție de perioada fiscală a firmei</li>
+    <li>Declarația informativă D394 privind livrările și achizițiile pe teritoriul național</li>
+    <li>Verificarea facturilor primite în SPV și corelarea lor cu evidența contabilă</li>
+    <li>Declarația recapitulativă D390, dacă firma are operațiuni intracomunitare</li>
+  </ul>
+
+  <p>
+    Termenul de depunere pentru decontul de TVA este <Tbd label="termen depunere D300" />, iar
+    pentru D394 <Tbd label="termen depunere D394" />. Verificăm evidența înainte de depunere,
+    nu după, pentru că o corecție ulterioară înseamnă declarație rectificativă.
+  </p>
+
+  <h2>SRL neplătitor de TVA</h2>
+
+  <p>
+    Sub plafonul de <Tbd label="plafon cifră de afaceri TVA" /> lei cifră de afaceri anuală,
+    firma poate rămâne neplătitoare de TVA. Evidența este mai simplă: nu se întocmesc
+    jurnale de TVA și nu se depune D300, iar facturile se emit fără taxă, cu mențiunea
+    corespunzătoare.
+  </p>
+
+  <p>
+    Partea de care ne ocupăm activ este plafonul. Urmărim cifra de afaceri lună de lună
+    și te anunțăm din timp când firma se apropie de prag, ca înregistrarea în scopuri de
+    TVA să se facă la termen. Depășirea plafonului fără înregistrare în
+    <Tbd label="termen înregistrare după depășire plafon" /> înseamnă că TVA-ul se
+    datorează retroactiv de la data depășirii, plus <Tbd label="accesorii aplicabile" />.
+  </p>
+
+  <p>
+    Înregistrarea în scopuri de TVA se poate face și voluntar, înainte de atingerea
+    plafonului. Are sens dacă firma are cheltuieli mari cu TVA deductibilă sau dacă
+    lucrează preponderent cu clienți plătitori de TVA — analizăm cifrele împreună înainte
+    de a depune cererea.
+  </p>
+
+  <h2>Cum lucrăm</h2>
+
+  <p>
+    Documentele pot fi trimise scanat sau aduse la birou, în Ploiești. Termenul pe care
+    ni-l asumăm: documentele primite până în <Tbd label="zi limită primire documente" /> ale
+    lunii sunt înregistrate, iar balanța și situația de plată ajung la tine până în
+    <Tbd label="zi livrare balanță" />.
+  </p>
+
+  <p>
+    Facturile primite prin RO e-Factura le luăm direct din SPV, dacă ne dai acces — ce
+    presupune înrolarea și cum funcționează sunt explicate pe pagina despre
+    <a href="/servicii/e-factura-spv">e-Factura și SPV</a>.
+  </p>
+
+  <h2>Documente necesare pentru preluare</h2>
+
+  <ul>
+    <li>Certificatul de înregistrare și actul constitutiv</li>
+    <li>Balanța de verificare la data preluării și ultimul bilanț depus</li>
+    <li>Registrul-inventar și situația mijloacelor fixe</li>
+    <li>Contractele în derulare: chirii, leasing, credite, abonamente</li>
+    <li>Accesul în SPV sau împuternicirea pentru depunerea declarațiilor</li>
+  </ul>
+
+  <h2>Tarife</h2>
+
+  <p>
+    Tariful lunar pornește de la <Tbd label="tarif lunar SRL neplătitor TVA" /> lei pentru un
+    SRL neplătitor de TVA și de la <Tbd label="tarif lunar SRL plătitor TVA" /> lei pentru un
+    SRL plătitor de TVA. Depinde de numărul de documente, de numărul de salariați și de
+    numărul de conturi bancare. Îți dăm un preț ferm după ce vedem volumul, nu înainte.
+  </p>
+</ServiceLayout>

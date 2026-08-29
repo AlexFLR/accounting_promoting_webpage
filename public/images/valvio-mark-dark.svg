@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="160" height="132" viewBox="0 0 160 132" fill="none">
+  <title>valvio mark</title>
+  <polygon points="22,66 114,66 68,122" fill="#DCE8F2" stroke="#DCE8F2" stroke-width="9" stroke-linejoin="miter" stroke-miterlimit="10"></polygon>
+  <polygon points="46,66 138,66 92,10" fill="none" stroke="#7FB3D5" stroke-width="9" stroke-linejoin="miter" stroke-miterlimit="10"></polygon>
+  <path d="M10 66 H150" stroke="#DCE8F2" stroke-width="9" stroke-linecap="butt"></path>
+</svg>

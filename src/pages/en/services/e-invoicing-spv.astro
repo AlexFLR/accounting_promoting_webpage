@@ -1,0 +1,131 @@
+---
+/**
+ * RO e-Factura, for foreign-owned companies.
+ *
+ * Not a translation of the Romanian guide. A Romanian reader needs to know
+ * the deadlines and the penalties; a foreign owner usually needs something
+ * more basic first — that Romania has mandatory clearance e-invoicing at
+ * all, that it applies to them on identical terms, and that their group's
+ * ERP invoice is not a valid Romanian invoice by itself.
+ */
+import ServiceLayout from '@layouts/ServiceLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+---
+
+<ServiceLayout service="efactura" serviceType="E-invoicing compliance">
+  <p class="lede">
+    Romania operates mandatory clearance e-invoicing. Invoices are not sent
+    from you to your customer — they are submitted to the tax authority, which
+    validates them and makes the cleared version the legally valid one.
+  </p>
+
+  <p>
+    If you have run a company elsewhere in the EU, this is the part that
+    usually surprises: the invoice your group's ERP produces is not a valid
+    Romanian invoice on its own, no matter how correct it looks.
+  </p>
+
+  <h2>How clearance changes the invoice</h2>
+
+  <p>
+    You upload the invoice to SPV, the tax authority's electronic portal.
+    ANAF applies an electronic seal, and the sealed document is the invoice
+    that counts. A PDF emailed to your customer has no independent fiscal
+    standing.
+  </p>
+
+  <p>
+    The practical consequence: an invoice exists because it was accepted, not
+    because you issued it. One rejected and left uncorrected has, fiscally,
+    not been issued at all — while your accounts and your customer's may both
+    show it as outstanding.
+  </p>
+
+  <h2>It applies to you on identical terms</h2>
+
+  <ul>
+    <li>All B2B transactions between taxable persons established in Romania</li>
+    <li>All B2G — supplies to public institutions</li>
+    <li>From <Tbd label="dată intrare B2C în sistem" />, B2C as well</li>
+  </ul>
+
+  <p>
+    There is no size threshold and no exemption for foreign ownership. A
+    Romanian subsidiary of a foreign group is subject to exactly the same
+    rules as a local company with one shareholder.
+  </p>
+
+  <h2>The deduction risk runs in your direction</h2>
+
+  <p>
+    Late submission carries a fine from
+    <Tbd label="cuantum amendă netransmitere" />, scaled by taxpayer size.
+    The fine is rarely the expensive part.
+  </p>
+
+  <p>
+    An invoice received outside the system gives you <em>no right to deduct
+    VAT</em>. So if a Romanian supplier emails you an invoice and never uploads
+    it, the loss lands on you at the next inspection, not on them. Chasing
+    suppliers who have not filed is a real, recurring task — and one most
+    foreign owners do not realise they have acquired.
+  </p>
+
+  <h2>You need a Romanian digital certificate</h2>
+
+  <p>
+    SPV access requires a qualified digital certificate from an accredited
+    Romanian provider, issued to the administrator or to a holder of a power
+    of attorney. It costs around
+    <Tbd label="cost certificat digital calificat" /> per year and takes
+    <Tbd label="durată obținere certificat" /> to obtain.
+  </p>
+
+  <p>
+    A non-resident administrator can hold one, but the process is slower. In
+    most cases it is simpler to grant a power of attorney to your accountant
+    in Romania — which is what we do for the foreign-owned companies we work
+    with.
+  </p>
+
+  <h2>Connecting your existing system</h2>
+
+  <p>
+    If your group invoices from SAP, NetSuite, Xero or similar, you do not
+    have to abandon it. The Romanian requirement is that the invoice reaches
+    SPV in the required XML format and comes back sealed. That can be done by
+    export and upload, or by connecting the system to the API.
+  </p>
+
+  <p>
+    We set this up and then run it: transmission, checking the status of each
+    invoice, pulling down what suppliers have filed, and correcting rejections
+    within the deadline.
+  </p>
+
+  <h2>What we handle</h2>
+
+  <ul>
+    <li>SPV enrolment, including obtaining the digital certificate</li>
+    <li>Power of attorney so filings can be made on your behalf</li>
+    <li>Submitting issued invoices and monitoring each one's status</li>
+    <li>Retrieving supplier invoices and reconciling them to the ledger</li>
+    <li>Chasing suppliers who have not filed</li>
+    <li>Correcting rejected invoices within the deadline</li>
+    <li>Reporting to you in English on what was filed and what is outstanding</li>
+  </ul>
+
+  <p>
+    For clients on a monthly
+    <a href="/en/services/accounting-srl">accounting retainer</a>, retrieval
+    from SPV is included — it is how we obtain your documents in any case.
+  </p>
+
+  <h2>Fees</h2>
+
+  <p>
+    Enrolment and initial setup: <Tbd label="tarif înrolare SPV" />, one-off.
+    Monthly transmission and monitoring: from
+    <Tbd label="tarif lunar e-Factura" />, depending on invoice volume.
+  </p>
+</ServiceLayout>

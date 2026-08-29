@@ -1,0 +1,103 @@
+---
+/**
+ * Contabilitate PFA — one of the three pages carrying "Ploiești" in the
+ * title and H1.
+ *
+ * PFA, II and profesii liberale share a page because they share the same
+ * accounting regime (partidă simplă) and the same annual return. Splitting
+ * them would produce three thin pages competing for overlapping queries.
+ */
+import ServiceLayout from '@layouts/ServiceLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+---
+
+<ServiceLayout service="pfa" serviceType="Contabilitate în partidă simplă">
+  <p class="lede">
+    Ținem contabilitatea persoanelor fizice autorizate, întreprinderilor
+    individuale și profesiilor liberale din Ploiești și din județul Prahova:
+    registrul de încasări și plăți, Declarația Unică și contribuțiile.
+  </p>
+
+  <p>
+    Spre deosebire de un SRL, o PFA ține contabilitate în partidă simplă. Este
+    mai puțin de lucru, dar are propriile capcane — mai ales la calculul
+    contribuțiilor, unde plafoanele se raportează la salariul minim și se
+    schimbă aproape în fiecare an.
+  </p>
+
+  <h2>Ce include serviciul</h2>
+
+  <ul>
+    <li>Registrul-jurnal de încasări și plăți</li>
+    <li>Registrul-inventar</li>
+    <li>Evidența documentelor: facturi emise, chitanțe, bonuri, extrase</li>
+    <li>Calculul venitului net anual și al impozitului pe venit</li>
+    <li>Întocmirea și depunerea Declarației Unice prin SPV</li>
+    <li>Calculul contribuțiilor CAS și CASS și verificarea plafoanelor</li>
+    <li>Facturi emise în numele tău, dacă preferi să nu le faci singur</li>
+  </ul>
+
+  <h2>Sistem real sau normă de venit</h2>
+
+  <p>
+    O PFA poate fi impozitată în sistem real — pe venitul net efectiv, adică
+    încasări minus cheltuieli deductibile — sau la normă de venit, o sumă fixă
+    stabilită anual pentru fiecare activitate și județ.
+  </p>
+
+  <p>
+    Norma de venit se aplică doar anumitor coduri CAEN și doar sub un plafon
+    de <Tbd label="plafon normă de venit" /> lei. Diferența dintre cele două
+    sisteme poate fi de mii de lei pe an în ambele direcții: dacă ai cheltuieli
+    mari, sistemul real este aproape întotdeauna mai avantajos; dacă ai
+    cheltuieli mici și încasări bune, norma poate fi. Facem calculul înainte de
+    a alege, nu după.
+  </p>
+
+  <h2>Contribuții: CAS și CASS</h2>
+
+  <p>
+    Contribuțiile nu se datorează automat, ci peste anumite plafoane raportate
+    la salariul minim brut:
+  </p>
+
+  <ul>
+    <li>CAS (pensie) — se datorează peste <Tbd label="plafon CAS" /></li>
+    <li>CASS (sănătate) — se datorează peste <Tbd label="plafon CASS" /></li>
+  </ul>
+
+  <p>
+    Urmărim venitul pe parcursul anului și îți spunem din timp dacă vei depăși
+    un plafon, ca să nu afli în momentul depunerii Declarației Unice că
+    datorezi o sumă la care nu te așteptai. Termenul de depunere este
+    <Tbd label="termen Declarația Unică" />.
+  </p>
+
+  <h2>Și TVA?</h2>
+
+  <p>
+    O PFA se înregistrează în scopuri de TVA după aceleași reguli ca o firmă,
+    la depășirea plafonului de <Tbd label="plafon cifră de afaceri TVA" /> lei.
+    Dacă ajungi acolo, se adaugă jurnalele de TVA și decontul — sunt descrise pe
+    pagina despre <a href="/servicii/declaratii-fiscale-tva">declarații fiscale</a>.
+  </p>
+
+  <h2>Documente necesare</h2>
+
+  <ul>
+    <li>Certificatul de înregistrare și autorizația de funcționare</li>
+    <li>Codurile CAEN autorizate</li>
+    <li>Extrasele de cont și documentele de încasări și plăți</li>
+    <li>Contractele în derulare</li>
+    <li>Accesul în SPV sau împuternicirea pentru depunere</li>
+  </ul>
+
+  <h2>Tarife</h2>
+
+  <p>
+    De la <Tbd label="tarif lunar PFA" /> lei pe lună pentru o PFA fără
+    salariați și fără TVA. Pentru activități cu volum mic, lucrăm și în regim
+    anual, doar pentru Declarația Unică — de la
+    <Tbd label="tarif Declarația Unică" /> lei.
+  </p>
+</ServiceLayout>

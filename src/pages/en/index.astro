@@ -1,0 +1,37 @@
+---
+/**
+ * English homepage — the same form as the Romanian one, not a translation.
+ *
+ * Every section is language-aware, so this is the identical component stack;
+ * only the copy and the service list differ. The services entry shows two
+ * groups rather than four, because only two service pages exist in English —
+ * that falls out of the registry rather than being hard-coded here.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Hero from '@components/sections/Hero.astro';
+import ServicesTeaser from '@components/sections/ServicesTeaser.astro';
+import Handover from '@components/sections/Handover.astro';
+import Reviews from '@components/sections/Reviews.astro';
+import Location from '@components/sections/Location.astro';
+import SectionNav from '@components/ui/SectionNav.astro';
+import SnapScript from '@components/ui/SnapScript.astro';
+import { useTranslations } from '@i18n/utils';
+
+const t = useTranslations('en');
+---
+
+<BaseLayout
+  title="Accounting in Ploiești, Romania"
+  description={t('hero.subtitle')}
+  snap
+>
+  <SectionNav />
+
+  <Hero />
+  <ServicesTeaser />
+  <Handover />
+  <Reviews />
+  <Location />
+
+  <SnapScript />
+</BaseLayout>

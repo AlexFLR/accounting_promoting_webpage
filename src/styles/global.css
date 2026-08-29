@@ -1,0 +1,491 @@
+@import './fonts.css';
+@import './tokens.css';
+
+/* ── Reset ──────────────────────────────────────────────────────────────*/
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+* {
+  margin: 0;
+}
+
+html {
+  -webkit-text-size-adjust: 100%;
+  scroll-behavior: smooth;
+  /* Anchor targets clear the floating header */
+  scroll-padding-top: calc(var(--island-height) + var(--space-8));
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
+
+body {
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  color: var(--color-ink-body); /* headings use the darker --color-ink */
+  background: var(--color-surface);
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+  min-height: 100dvh;
+  display: flex;
+  flex-direction: column;
+}
+
+img,
+picture,
+svg,
+video {
+  display: block;
+  max-width: 100%;
+  height: auto;
+}
+
+input,
+button,
+textarea,
+select {
+  font: inherit;
+  color: inherit;
+}
+
+h1,
+h2,
+h3,
+h4 {
+  /* Vollda ships Bold only, so headings are always 700 — there is no lighter
+     weight to fall back to, and a synthetic light would look broken. */
+  font-family: var(--font-display);
+  font-weight: var(--weight-bold);
+  /* Headings sit at the dark end of the ledger scale; body text is one step
+     lighter (--color-ink-body). The difference is what gives a page of text
+     hierarchy without changing size. */
+  color: var(--color-ink);
+  line-height: var(--leading-tight);
+  text-wrap: balance;
+  letter-spacing: -0.011em; /* large type needs slight negative tracking */
+}
+
+h1 {
+  font-size: var(--text-3xl);
+  letter-spacing: -0.022em;
+}
+h2 {
+  font-size: var(--text-2xl);
+  letter-spacing: -0.017em;
+}
+h3 {
+  font-size: var(--text-xl);
+}
+
+p,
+li {
+  text-wrap: pretty;
+}
+
+a {
+  color: var(--color-brand-500);
+  text-underline-offset: 0.15em;
+  text-decoration-thickness: max(1px, 0.06em);
+}
+
+:focus-visible {
+  outline: 2px solid var(--color-brand-500);
+  outline-offset: 2px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--color-brand-100);
+  color: var(--color-brand-700);
+}
+
+/* ── Layout primitives ──────────────────────────────────────────────────*/
+.container {
+  width: 100%;
+  max-width: var(--width-container);
+  margin-inline: auto;
+  padding-inline: var(--space-6);
+}
+
+.section {
+  padding-block: var(--space-16);
+}
+
+/* The hero runs under the floating header; every other page starts below it. */
+main {
+  flex: 1;
+}
+
+main > :first-child:not([data-under-header]) {
+  padding-top: calc(var(--island-height) + var(--space-12));
+}
+
+/* Long-form article body. Serif, and a step larger — Garamontio has a small
+   x-height, which reads as undersized at the same nominal size as a sans. */
+.prose {
+  max-width: var(--width-content);
+  font-family: var(--font-serif);
+  font-size: var(--text-lg);
+}
+
+.prose > * + * {
+  margin-top: var(--space-4);
+}
+
+.prose h2,
+.prose h3 {
+  margin-top: var(--space-8);
+}
+
+/* ── Utilities ──────────────────────────────────────────────────────────*/
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  padding: 0;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+  border: 0;
+}
+
+.skip-link {
+  position: absolute;
+  left: var(--space-4);
+  top: var(--space-4);
+  z-index: 100;
+  padding: var(--space-3) var(--space-5);
+  background: var(--color-surface-raised);
+  color: var(--color-ink);
+  border-radius: var(--radius-pill);
+  box-shadow: var(--shadow-md);
+  text-decoration: none;
+  transform: translateY(-250%);
+  transition: transform var(--duration-fast) var(--ease-out);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+/* ── Card ───────────────────────────────────────────────────────────────
+   Cream paper restores the elevation ramp that a pure-white page destroys:
+   --ledger-0 is genuinely lighter than the page, so a raised surface can
+   get lighter as the eye expects. The border still does the edge work; the
+   shadow only suggests height. See DESIGN.md §1. */
+.card {
+  background: var(--color-surface-raised);
+  border: 1px solid var(--color-line);
+  border-radius: var(--radius-md);
+  padding: var(--space-6);
+  box-shadow: var(--shadow-sm);
+}
+
+/* Interactive cards earn lift on hover; static ones stay flat. */
+a.card,
+.card--interactive {
+  transition:
+    box-shadow var(--duration-base) var(--ease-out),
+    border-color var(--duration-base) var(--ease-out),
+    transform var(--duration-base) var(--ease-out);
+}
+
+a.card:hover,
+.card--interactive:hover {
+  border-color: var(--color-ink-subtle);
+  box-shadow: var(--shadow-md);
+  transform: translateY(-2px);
+}
+
+/* Alternating page bands. */
+.section--band {
+  background: var(--color-surface-sunken);
+}
+
+/* ── Scroll snapping ────────────────────────────────────────────────────
+   Only on pages that opt in (the homepage). Long-form service pages must
+   never snap — they are read, not paged through.
+
+   `proximity`, NOT `mandatory`. Mandatory snapping forces the viewport to a
+   snap point whenever scrolling settles, which traps the reader on any
+   section taller than the screen: they scroll, the browser drags them back,
+   and the bottom of the content becomes unreachable. Several sections here
+   overflow on a laptop. Proximity snaps when you land near a boundary and
+   otherwise leaves scrolling alone, which is the difference between a
+   pleasant effect and a broken page. */
+html[data-snap] {
+  scroll-snap-type: y proximity;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-snap] {
+    scroll-snap-type: none;
+  }
+}
+
+.snap-section {
+  scroll-snap-align: start;
+  /* Never `height` — a section whose content exceeds the viewport must grow,
+     not clip. This is what makes `proximity` safe. */
+  min-height: 100dvh;
+  background: var(--section-bg, var(--color-surface));
+  transition: background-color 600ms var(--ease-out);
+}
+
+/* Short landscape screens: full-height blocks would crush the content. */
+@media (max-height: 34rem) {
+  html[data-snap] {
+    scroll-snap-type: none;
+  }
+
+  .snap-section {
+    min-height: 0;
+  }
+}
+
+/* ── Section themes ─────────────────────────────────────────────────────
+   Distinct grounds, all drawn from the ledger scale. The ink theme
+   redefines the text tokens rather than setting colours directly, so every
+   descendant follows without knowing it is on a dark ground. Values are the
+   dark-scheme ones already verified in tokens.css. */
+[data-section-theme='paper'] {
+  --section-bg: var(--ledger-1);
+}
+
+[data-section-theme='band'] {
+  --section-bg: var(--ledger-2);
+}
+
+[data-section-theme='well'] {
+  --section-bg: var(--ledger-3);
+}
+
+/**
+ * The one always-dark band.
+ *
+ * The background is a LITERAL, not `var(--ledger-8)`. That token is the navy
+ * in light scheme but the pale cream in dark scheme — so reading it here
+ * would put this section's light text on a light ground the moment a visitor
+ * has dark mode on. A section that commits to one visual world has to state
+ * both halves of it explicitly.
+ */
+[data-section-theme='ink'] {
+  --section-bg: #0a1f33;
+  --color-ink: #f4f0e8;        /* 15.4:1 on the navy ground */
+  --color-ink-body: #c3d4e2;   /* 11.0:1 */
+  --color-ink-muted: #8fa3b5;  /*  6.4:1 */
+  --color-ink-subtle: #5f7d96; /*  3.9:1 — borders and large text only */
+  --color-line: #1d3a52;
+  --color-line-strong: #5f7d96;
+  --color-brand-500: #7fb3d5;  /*  7.4:1 */
+  --color-surface-sunken: #0f273d;
+  --color-surface-well: #143046;
+}
+
+/* In dark scheme the page is already navy, so this band lifts instead of
+   darkening — otherwise it would be invisible against its neighbours. */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme='light']) [data-section-theme='ink'] {
+    --section-bg: #16304a;
+  }
+}
+
+/* ── Entrance reveal ────────────────────────────────────────────────────
+   Content is visible by default and only hidden once JavaScript has
+   confirmed it can reveal it again. Baking `opacity: 0` into the HTML would
+   leave the page blank for anyone whose script fails to run. */
+html[data-js] [data-reveal] {
+  opacity: 0;
+  transform: translateY(1.25rem);
+  transition:
+    opacity 600ms var(--ease-out),
+    transform 600ms var(--ease-out);
+  transition-delay: calc(var(--reveal-i, 0) * 90ms);
+}
+
+html[data-js] [data-reveal].is-revealed {
+  opacity: 1;
+  transform: none;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html[data-js] [data-reveal] {
+    opacity: 1;
+    transform: none;
+    transition: none;
+  }
+}
+
+/* ── Register ───────────────────────────────────────────────────────────
+   The page's one repeating content shape: ruled rows with a reference in
+   the left column. Used by services, the handover sequence and the office
+   details, so those sections read as parts of one document rather than
+   three different components that happen to share a palette.
+
+   No cards, no rounded boxes, no shadows — a register is ruled, not boxed. */
+.reg {
+  border-top: 2px solid var(--color-ink);
+}
+
+.reg__row {
+  display: grid;
+  grid-template-columns: 3.25rem minmax(0, 1fr);
+  gap: var(--space-2) var(--space-5);
+  padding: var(--space-4) 0;
+  border-bottom: 1px solid var(--color-line);
+  align-items: baseline;
+}
+
+/* Rows that link somewhere take the whole row as the target. */
+a.reg__row {
+  text-decoration: none;
+  transition: background-color var(--duration-fast) var(--ease-out);
+}
+
+a.reg__row:hover {
+  background: var(--color-surface-sunken);
+}
+
+.reg__ref {
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  font-variant-numeric: tabular-nums;
+  color: var(--color-ink-subtle);
+  letter-spacing: 0.03em;
+}
+
+.reg__main {
+  display: grid;
+  gap: var(--space-1);
+  min-width: 0;
+}
+
+.reg__title {
+  font-weight: var(--weight-semi);
+  color: var(--color-ink);
+}
+
+a.reg__row:hover .reg__title {
+  color: var(--color-brand-500);
+}
+
+.reg__note {
+  color: var(--color-ink-muted);
+  font-size: var(--text-sm);
+}
+
+/* A rule-spanning label that breaks the register into groups. */
+.reg__break {
+  grid-column: 1 / -1;
+  padding: var(--space-5) 0 var(--space-2);
+  font-size: 0.6875rem;
+  font-weight: var(--weight-semi);
+  letter-spacing: 0.12em;
+  text-transform: uppercase;
+  color: var(--color-ink-muted);
+  border-bottom: 1px solid var(--color-line);
+}
+
+@media (max-width: 34rem) {
+  .reg__row {
+    grid-template-columns: minmax(0, 1fr);
+    gap: var(--space-1);
+  }
+}
+
+/* ── Status chips — THE ONLY PLACE RED AND GREEN EXIST ──────────────────
+   Red: imminent fiscal deadline counters (D112, D300, D394). Nothing else.
+   Green: "depus / la termen" states. Nothing else.
+
+   These classes exist so the reservation is enforceable rather than a note
+   in a document — if you need red, you need one of these, and if neither
+   fits then red is not the answer. Spending the colour elsewhere is what
+   makes a deadline counter stop reading as urgent.
+
+   Both carry an icon and a text label, so the state never depends on colour
+   alone (roughly 1 in 12 men has a colour vision deficiency). */
+.chip {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  padding: var(--space-1) var(--space-3);
+  border-radius: var(--radius-pill);
+  font-size: var(--text-sm);
+  font-weight: var(--weight-semi);
+  font-variant-numeric: tabular-nums; /* counters must not jitter as they tick */
+}
+
+.chip--deadline {
+  background: var(--color-deadline-wash);
+  color: var(--color-deadline-ink); /* 7.52:1 on the wash */
+  border: 1px solid var(--color-deadline);
+}
+
+.chip--filed {
+  background: var(--color-filed-wash);
+  color: var(--color-filed-ink); /* 6.98:1 on the wash */
+  border: 1px solid var(--color-filed);
+}
+
+/* ── Buttons ────────────────────────────────────────────────────────────*/
+.button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: var(--space-2);
+  min-height: var(--tap-target);
+  padding: var(--space-2) var(--space-5);
+  border: 1px solid transparent;
+  border-radius: var(--radius-pill);
+  font-weight: var(--weight-semi);
+  font-size: var(--text-sm);
+  text-decoration: none;
+  cursor: pointer;
+  transition:
+    background-color var(--duration-fast) var(--ease-out),
+    border-color var(--duration-fast) var(--ease-out),
+    transform var(--duration-fast) var(--ease-out);
+}
+
+.button--primary {
+  background: var(--color-brand-500);
+  /* Cream, not #fff — no pure white anywhere. 6.36:1 on the accent. */
+  color: var(--color-ink-inverse);
+}
+
+.button--primary:hover {
+  background: var(--color-brand-600);
+}
+
+.button--primary:active {
+  transform: translateY(1px);
+}
+
+.button--ghost {
+  border-color: var(--color-line-strong);
+  color: var(--color-ink);
+  background: transparent;
+}
+
+.button--ghost:hover {
+  background: var(--color-surface-sunken);
+}
+
+.button:disabled {
+  opacity: 0.6;
+  cursor: progress;
+}

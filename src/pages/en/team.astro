@@ -1,0 +1,141 @@
+---
+/**
+ * Our team — the English counterpart of /echipa.
+ *
+ * Not a decorative "about" page. Accounting is a "your money or your life"
+ * topic in Google's terms, where a named, credentialed human behind the
+ * advice carries real ranking weight — and a foreign owner deciding whether
+ * to hand over their Romanian filings has exactly the same question a
+ * Romanian one does: who is actually doing this, and are they licensed.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { site } from '@/data/site';
+---
+
+<BaseLayout
+  title="Our team"
+  description="Who keeps your books: CECCAR-licensed accountants based in Ploiești, working with foreign-owned Romanian companies. The same people from first email to annual accounts."
+  locales={['ro', 'en']}
+>
+  <section class="team">
+    <div class="container">
+      <h1>Our team</h1>
+
+      <p class="lede">
+        We are a small practice in Ploiești. That means you speak to the same
+        person every time, and whoever answers the phone is the person who
+        actually keeps your books.
+      </p>
+
+      <h2>Who works on your company</h2>
+
+      <ul class="people">
+        <li>
+          <p class="person__name"><Tbd label="nume expert contabil coordonator" /></p>
+          <p class="person__role">
+            Chartered accountant, CECCAR member — licence no.
+            <Tbd label="număr carnet CECCAR" />
+          </p>
+          <p class="person__note"><Tbd label="experiență și domenii — 1–2 propoziții" /></p>
+        </li>
+        <li>
+          <p class="person__name"><Tbd label="nume al doilea membru" /></p>
+          <p class="person__role"><Tbd label="rol / calificare" /></p>
+          <p class="person__note"><Tbd label="experiență și domenii — 1–2 propoziții" /></p>
+        </li>
+      </ul>
+
+      <h2>How we work</h2>
+
+      <p>
+        We commit to dates, not intentions. Documents received by the agreed day
+        are recorded that month, and your trial balance and the statement of what
+        is payable reach you before the filing deadlines, not on them.
+      </p>
+
+      <p>
+        Questions are not billed. If you want to know how something will be taxed
+        before you sign a contract, that question is part of the retainer —
+        finding out afterwards always costs more than asking first.
+      </p>
+
+      <p>
+        Correspondence and reporting are in English; filings go to the Romanian
+        tax authority in Romanian. For complex tax advice, transfer pricing or
+        disputes with ANAF we work with
+        <Tbd label="parteneri / colaboratori externi" /> rather than improvising.
+      </p>
+
+      <h2>The office</h2>
+
+      <p>
+        {site.address.street}, {site.address.city}, {site.address.region} county.
+        Monday to Friday, {site.hours[0].opens}–{site.hours[0].closes}. Documents
+        can be brought in or sent scanned — for most clients, meeting in person is
+        rare after the handover.
+      </p>
+
+      <p>
+        We are registered with CECCAR, the Romanian body of chartered accountants,
+        under authorisation no. <Tbd label="număr autorizație CECCAR a societății" />,
+        and carry professional indemnity insurance of
+        <Tbd label="plafon asigurare răspundere civilă" />.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .team {
+    padding-block: var(--space-12) var(--space-24);
+  }
+
+  .lede {
+    max-width: 58ch;
+    font-size: var(--text-lg);
+    color: var(--color-ink-body);
+    margin-top: var(--space-6);
+  }
+
+  h2 {
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-4);
+    max-width: var(--width-content);
+  }
+
+  p {
+    max-width: var(--width-content);
+    margin-bottom: var(--space-4);
+  }
+
+  .people {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    max-width: var(--width-content);
+    border-top: 2px solid var(--color-ink);
+  }
+
+  .people li {
+    padding: var(--space-5) 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .person__name {
+    font-family: var(--font-display);
+    font-size: var(--text-xl);
+    color: var(--color-ink);
+    margin-bottom: var(--space-1);
+  }
+
+  .person__role {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    margin-bottom: var(--space-2);
+  }
+
+  .person__note {
+    margin-bottom: 0;
+  }
+</style>

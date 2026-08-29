@@ -1,0 +1,131 @@
+---
+/**
+ * English services hub — intentionally two entries, not seven.
+ *
+ * It renders from the same registry as the Romanian hub, filtered by locale,
+ * so it cannot drift out of sync or accidentally link into the Romanian-only
+ * set. Adding `en` copy to a service is what makes it appear here.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { pathFor } from '@i18n/utils';
+import { servicesByGroup, copy } from '@/data/services';
+
+const lang = 'en' as const;
+
+const groups = servicesByGroup(lang);
+const hubHref = pathFor('services', lang);
+---
+
+<BaseLayout
+  title="Services for foreign-owned companies"
+  description="Accounting and e-invoicing compliance for foreign-owned Romanian companies in Ploiești and Prahova, with reporting and correspondence in English."
+>
+  <section class="hub">
+    <div class="container">
+      <h1>Services in English</h1>
+
+      <p class="hub__intro">
+        We work with foreign-owned Romanian companies in Ploiești and Prahova, handling
+        the bookkeeping and the filings in Romanian and reporting back to you in English.
+        The two pages below cover what foreign owners most often need explained; the full
+        range of services is described in Romanian.
+      </p>
+
+      {
+        groups.map((group) => (
+          <section class="group">
+            <h2 class="group__label">{group.label}</h2>
+            <ul class="group__list">
+              {group.items.map((service) => {
+                const c = copy(service, lang)!;
+                return (
+                  <li>
+                    <a href={`${hubHref}/${c.slug}`}>
+                      <span class="group__name">{c.h1}</span>
+                      <span class="group__teaser">{c.teaser}</span>
+                    </a>
+                  </li>
+                );
+              })}
+            </ul>
+          </section>
+        ))
+      }
+
+      <p class="hub__note">
+        Payroll, annual financial statements, tax returns and statutory audit reports are
+        also available — those pages are written in Romanian. Ask us in English and we
+        will answer in English.
+      </p>
+    </div>
+  </section>
+</BaseLayout>
+
+<style>
+  .hub {
+    padding-block: var(--space-12) var(--space-24);
+  }
+
+  .hub__intro {
+    max-width: 58ch;
+    font-size: var(--text-lg);
+    color: var(--color-ink-body);
+    margin-top: var(--space-6);
+  }
+
+  .group {
+    margin-top: var(--space-12);
+    max-width: var(--width-content);
+  }
+
+  .group__label {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-ink);
+  }
+
+  .group__list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+  }
+
+  .group__list li + li {
+    border-top: 1px solid var(--color-line);
+  }
+
+  .group__list a {
+    display: grid;
+    gap: var(--space-1);
+    padding: var(--space-4) 0;
+    text-decoration: none;
+  }
+
+  .group__name {
+    color: var(--color-brand-500);
+    font-weight: var(--weight-semi);
+  }
+
+  .group__list a:hover .group__name {
+    text-decoration: underline;
+  }
+
+  .group__teaser {
+    color: var(--color-ink-muted);
+    font-size: var(--text-sm);
+  }
+
+  .hub__note {
+    margin-top: var(--space-16);
+    padding-top: var(--space-4);
+    border-top: 1px solid var(--color-line);
+    max-width: var(--width-content);
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+</style>

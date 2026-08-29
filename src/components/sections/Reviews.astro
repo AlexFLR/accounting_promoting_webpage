@@ -1,0 +1,129 @@
+---
+/**
+ * Client reviews.
+ *
+ * Empty on purpose. Inventing testimonials for an accounting firm is both
+ * dishonest and, in Romania, actionable — so this renders the structure and
+ * waits for real ones. Paste them into `reviews` below.
+ *
+ * Deliberately NO Review / AggregateRating structured data. Google treats
+ * reviews hosted by the reviewed business as "self-serving" and makes pages
+ * using LocalBusiness or Organization schema ineligible for star rich
+ * results — including embedded Google or Facebook widgets, not just
+ * hand-written quotes. The stars live on the Business Profile; this links
+ * there instead.
+ *
+ * Laid out as a single ruled column, not a row of testimonial cards: quotes
+ * set in the serif, attribution in the margin. Three matching cards is the
+ * shape every competitor uses and says nothing about what is in them.
+ */
+import Section from '@components/ui/Section.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { getLangFromUrl, useTranslations } from '@i18n/utils';
+
+interface Review {
+  quote: string;
+  author: string;
+  /** Trade and how long they have been a client. */
+  context: string;
+}
+
+/** Real reviews only. Empty until you have them. */
+const reviews: Review[] = [];
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+---
+
+<Section section="referinte">
+  <p class="intro">{t('home.reviewsIntro')}</p>
+
+  {
+    reviews.length > 0 ? (
+      <div class="reg">
+        {reviews.map((r, i) => (
+          <figure class="reg__row quote">
+            <figcaption class="reg__ref">{String(i + 1).padStart(2, '0')}</figcaption>
+            <div class="reg__main">
+              <blockquote>{r.quote}</blockquote>
+              <p class="quote__by">
+                <span class="quote__author">{r.author}</span>
+                <span class="reg__note">{r.context}</span>
+              </p>
+            </div>
+          </figure>
+        ))}
+      </div>
+    ) : (
+      <p class="empty">
+        <Tbd label="3–4 recenzii reale, copiate din profilul Google" />
+        <span class="empty__hint">
+          Se adaugă în lista <code>reviews</code> din
+          <code>src/components/sections/Reviews.astro</code>.
+        </span>
+      </p>
+    )
+  }
+
+  <p class="after">
+    <a href="#">{t('home.reviewsLink')}</a>
+    <Tbd label="link profil Google Business" />
+  </p>
+</Section>
+
+<style>
+  .intro {
+    max-width: 54ch;
+    color: var(--color-ink-body);
+    margin-bottom: var(--space-8);
+  }
+
+  /* The one voice on the page that is not ours — the change of face says so
+     without a decorative quotation mark. */
+  blockquote {
+    margin: 0;
+    font-family: var(--font-serif);
+    font-size: var(--text-lg);
+    color: var(--color-ink);
+  }
+
+  .quote__by {
+    margin-top: var(--space-3);
+    display: grid;
+    gap: var(--space-1);
+  }
+
+  .quote__author {
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+  }
+
+  .empty {
+    display: grid;
+    gap: var(--space-2);
+    justify-items: start;
+    padding: var(--space-5) 0;
+    border-top: 2px solid var(--color-ink);
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .empty__hint {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .empty__hint code {
+    background: var(--color-surface-well);
+    padding: 0 0.3em;
+    border-radius: var(--radius-sm);
+  }
+
+  .after {
+    margin-top: var(--space-6);
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+    flex-wrap: wrap;
+    font-size: var(--text-sm);
+  }
+</style>

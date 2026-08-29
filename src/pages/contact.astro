@@ -1,0 +1,14 @@
+---
+import BaseLayout from '@layouts/BaseLayout.astro';
+import ContactForm from '@components/islands/ContactForm.astro';
+import { useTranslations } from '@i18n/utils';
+
+const t = useTranslations('ro');
+---
+
+<BaseLayout title={t('contact.heading')} description={t('hero.subtitle')}>
+  <section class="section container">
+    <h1>{t('contact.heading')}</h1>
+    <ContactForm />
+  </section>
+</BaseLayout>

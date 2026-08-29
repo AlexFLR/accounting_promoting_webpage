@@ -1,0 +1,111 @@
+---
+/**
+ * Declarații fiscale — narrowed deliberately.
+ *
+ * This page overlaps heavily with the SRL page, so it is scoped to the three
+ * declarations and the filing calendar rather than restating the monthly
+ * service. Without that narrowing the two pages would compete for the same
+ * queries and Google would pick one of them for us.
+ *
+ * No "Ploiești" in the title or H1 — the three local-intent pages are SRL,
+ * PFA and salarizare. The city appears in body copy here instead.
+ */
+import ServiceLayout from '@layouts/ServiceLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+---
+
+<ServiceLayout service="declaratii" serviceType="Întocmire și depunere declarații fiscale">
+  <p class="lede">
+    Întocmim și depunem D112, D300 și D394 prin Spațiul Privat Virtual, cu
+    verificare înainte de depunere și cu un calendar al termenelor pe care îl
+    urmărim noi, nu tu.
+  </p>
+
+  <p>
+    Pagina aceasta este despre declarații. Dacă vrei evidența contabilă
+    completă, aceea este descrisă pe pagina de
+    <a href="/servicii/contabilitate-srl">contabilitate pentru SRL</a>.
+  </p>
+
+  <h2>D112 — contribuții și impozit pe venit</h2>
+
+  <p>
+    Se depune de orice angajator, pentru fiecare lună în care a existat cel
+    puțin un contract activ — inclusiv pentru lunile în care nu s-a plătit
+    niciun salariu. Este declarația care se uită cel mai des, exact pentru că
+    „nu s-a întâmplat nimic” în luna respectivă.
+  </p>
+
+  <p>
+    Termen: <Tbd label="termen depunere D112" />. Depunerea cu întârziere se
+    sancționează cu <Tbd label="sancțiune întârziere D112" />.
+  </p>
+
+  <h2>D300 — decontul de TVA</h2>
+
+  <p>
+    Se depune de firmele înregistrate în scopuri de TVA, lunar sau trimestrial,
+    în funcție de perioada fiscală. Perioada nu se alege liber: este dată de
+    cifra de afaceri din anul anterior și de existența achizițiilor
+    intracomunitare.
+  </p>
+
+  <p>
+    Termen: <Tbd label="termen depunere D300" />. Dacă rezultă TVA de plată,
+    plata are același termen ca depunerea.
+  </p>
+
+  <h2>D394 — declarația informativă</h2>
+
+  <p>
+    Raportează livrările și achizițiile efectuate pe teritoriul național între
+    persoane înregistrate în scopuri de TVA. Se depune odată cu decontul, iar
+    ANAF o folosește pentru a încrucișa datele tale cu cele ale partenerilor.
+  </p>
+
+  <p>
+    Aici apar cele mai multe notificări: dacă tu ai declarat o factură pe care
+    furnizorul nu a declarat-o, sau invers, sistemul semnalează diferența.
+    Verificăm corelațiile înainte de depunere, pentru că o corecție ulterioară
+    înseamnă declarație rectificativă și, adesea, o discuție cu inspectorul.
+  </p>
+
+  <h2>Alte declarații pe care le depunem</h2>
+
+  <ul>
+    <li>D390 — declarația recapitulativă, pentru operațiuni intracomunitare</li>
+    <li>D100 — obligații de plată la bugetul de stat</li>
+    <li>D101 — impozitul pe profit anual</li>
+    <li>Declarația Unică, pentru PFA și profesii liberale</li>
+  </ul>
+
+  <h2>Calendarul termenelor</h2>
+
+  <p>
+    Termenele se repetă lunar, dar se mută când cad în weekend sau în sărbători
+    legale, iar în practică asta produce cele mai multe întârzieri: cineva
+    reține „25” și depune pe 25 într-o lună în care termenul fusese
+    <Tbd label="exemplu termen mutat" />.
+  </p>
+
+  <p>
+    Clienții noștri din Ploiești primesc lunar o situație scurtă cu ce se
+    depune, ce se plătește și până când — înainte de termen, nu în ziua lui.
+  </p>
+
+  <h2>Dacă ai deja o întârziere</h2>
+
+  <p>
+    Se rezolvă. Depunem declarațiile restante, calculăm accesoriile datorate și,
+    unde se poate, întocmim cererea de eșalonare sau de anulare a penalităților.
+    Spune-ne de când datează problema — cu cât mai devreme, cu atât mai ieftin.
+  </p>
+
+  <h2>Tarife</h2>
+
+  <p>
+    Depunerea declarațiilor este inclusă în abonamentul lunar de contabilitate.
+    Separat, doar pentru depunere, tariful pornește de la
+    <Tbd label="tarif depunere declarații separat" /> lei pe lună.
+  </p>
+</ServiceLayout>

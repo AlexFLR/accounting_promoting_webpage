@@ -1,0 +1,36 @@
+---
+/**
+ * Romanian homepage — a set of full-viewport snap blocks.
+ *
+ * Order is deliberate: the handover section sits above the references
+ * because the visitor's question is not "are they good" but "is switching
+ * going to hurt", and answering that converts better than a testimonial
+ * placed earlier.
+ *
+ * Section identity, theme and order live in src/data/homeSections.ts so the
+ * dot navigation and the sections themselves cannot drift apart.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import Hero from '@components/sections/Hero.astro';
+import ServicesTeaser from '@components/sections/ServicesTeaser.astro';
+import Handover from '@components/sections/Handover.astro';
+import Reviews from '@components/sections/Reviews.astro';
+import Location from '@components/sections/Location.astro';
+import SectionNav from '@components/ui/SectionNav.astro';
+import SnapScript from '@components/ui/SnapScript.astro';
+import { useTranslations } from '@i18n/utils';
+
+const t = useTranslations('ro');
+---
+
+<BaseLayout title="Contabilitate în Ploiești" description={t('hero.subtitle')} snap>
+  <SectionNav />
+
+  <Hero />
+  <ServicesTeaser />
+  <Handover />
+  <Reviews />
+  <Location />
+
+  <SnapScript />
+</BaseLayout>

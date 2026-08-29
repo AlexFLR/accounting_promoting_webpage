@@ -1,0 +1,92 @@
+---
+/**
+ * Behaviour for the snap homepage: entrance reveals and dot tracking.
+ *
+ * Two IntersectionObservers, deliberately — they need different thresholds.
+ * The reveal fires as soon as a sliver of an element appears; the dot needs
+ * to know which section *dominates* the viewport. One observer cannot do
+ * both without one of the two jobs being wrong.
+ */
+---
+
+<script>
+  /* Marks the document as script-capable. Until this runs, [data-reveal]
+     elements are fully visible — so a failed or blocked script leaves a
+     readable page rather than a blank one. */
+  document.documentElement.dataset.js = '';
+
+  const reduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* ── Entrance reveal ──────────────────────────────────────────────── */
+  const revealTargets = document.querySelectorAll<HTMLElement>('[data-reveal]');
+
+  if (reduced) {
+    revealTargets.forEach((el) => el.classList.add('is-revealed'));
+  } else {
+    const revealObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          if (!entry.isIntersecting) continue;
+          entry.target.classList.add('is-revealed');
+          // One-shot: re-animating on every pass is noise, not feedback.
+          revealObserver.unobserve(entry.target);
+        }
+      },
+      { rootMargin: '0px 0px -12% 0px', threshold: 0.05 }
+    );
+
+    revealTargets.forEach((el) => revealObserver.observe(el));
+  }
+
+  /* ── Dot tracking ─────────────────────────────────────────────────── */
+  const sections = document.querySelectorAll<HTMLElement>('[data-snap-section]');
+  const dots = new Map<string, HTMLAnchorElement>();
+  document
+    .querySelectorAll<HTMLAnchorElement>('[data-section-nav] [data-dot]')
+    .forEach((a) => dots.set(a.dataset.dot!, a));
+
+  if (sections.length && dots.size) {
+    const ratios = new Map<string, number>();
+
+    const themeOf = new Map<string, string>();
+    sections.forEach((s) => themeOf.set(s.id, s.dataset.sectionTheme ?? 'paper'));
+
+    const setCurrent = (id: string) => {
+      for (const [key, dot] of dots) {
+        if (key === id) dot.setAttribute('aria-current', 'true');
+        else dot.removeAttribute('aria-current');
+      }
+
+      /* The dot nav is position: fixed, so it sits OUTSIDE every section and
+         cannot inherit their ink tokens. Without this it would render dark
+         ink over the dark band and disappear. Publishing the active
+         section's theme lets fixed overlays follow along. */
+      document.documentElement.dataset.activeTheme = themeOf.get(id) ?? 'paper';
+    };
+
+    const navObserver = new IntersectionObserver(
+      (entries) => {
+        for (const entry of entries) {
+          ratios.set(entry.target.id, entry.isIntersecting ? entry.intersectionRatio : 0);
+        }
+
+        // Whichever section fills the most of the viewport wins. Comparing
+        // ratios rather than taking the first intersecting entry is what
+        // keeps the dot correct while two sections are both partly visible.
+        let bestId = '';
+        let best = 0;
+        for (const [id, ratio] of ratios) {
+          if (ratio > best) {
+            best = ratio;
+            bestId = id;
+          }
+        }
+
+        if (bestId) setCurrent(bestId);
+      },
+      { threshold: [0, 0.25, 0.5, 0.75, 1] }
+    );
+
+    sections.forEach((s) => navObserver.observe(s));
+  }
+</script>

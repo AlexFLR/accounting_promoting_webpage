@@ -1,0 +1,86 @@
+---
+/**
+ * Shows only the language you are NOT reading — a switch, not a picker.
+ *
+ * The visible label is just "EN" / "RO", which on its own is ambiguous
+ * (is that the current language, or the one on offer?). So the link carries
+ * an aria-label spelling out the action in the language of the page you are
+ * currently on: a Romanian reader hears "Comută la English".
+ *
+ * Written as a filter rather than a hard-coded pair, so adding a third
+ * language keeps working — you would simply get two links.
+ */
+import { languages } from '@i18n/ui';
+import { getLangFromUrl, useTranslations, switchLangPath, type Lang } from '@i18n/utils';
+
+interface Props {
+  /**
+   * Locales the current page exists in. Defaults to all of them.
+   * A page with only one gets no switch at all — offering a language that
+   * would land the visitor on a page in the wrong language is worse than
+   * offering nothing. Five of the seven service pages are Romanian-only.
+   */
+  locales?: Lang[];
+}
+
+const { locales }: Props = Astro.props;
+
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+
+const available = locales ?? (Object.keys(languages) as Lang[]);
+
+const alternatives = (Object.entries(languages) as [Lang, string][]).filter(
+  ([code]) => code !== lang && available.includes(code)
+);
+---
+
+{alternatives.length > 0 && (
+<nav class="lang" aria-label={t('a11y.languagePicker')}>
+  {
+    alternatives.map(([code, label]) => (
+      <a
+        class="lang__link"
+        href={switchLangPath(Astro.url, lang, code)}
+        hreflang={code}
+        aria-label={`${t('a11y.switchTo')} ${label}`}
+      >
+        {code.toUpperCase()}
+      </a>
+    ))
+  }
+</nav>
+)}
+
+<style>
+  .lang {
+    display: flex;
+    gap: var(--space-2);
+    font-size: var(--text-sm);
+  }
+
+  .lang__link {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    /* 44px tap target without visually bloating the island */
+    min-width: var(--tap-target);
+    min-height: var(--tap-target);
+    padding-inline: var(--space-2);
+    color: var(--color-ink-muted);
+    text-decoration: none;
+    font-weight: var(--weight-semi);
+    /* Standing alone it needs an edge to read as a control rather than as a
+       label of the current language. */
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-pill);
+    transition:
+      color var(--duration-fast) var(--ease-out),
+      border-color var(--duration-fast) var(--ease-out);
+  }
+
+  .lang__link:hover {
+    color: var(--color-ink);
+    border-color: var(--color-line-strong);
+  }
+</style>
