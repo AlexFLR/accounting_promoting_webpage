@@ -22,28 +22,29 @@ import { site } from '@/data/site';
     <div class="container">
       <h1>Echipa</h1>
 
+      <p class="motto">„Suntem lângă tine tot anul, nu doar la termen."</p>
+
       <p class="lede">
-        Suntem un birou mic, în Ploiești. Asta înseamnă că vorbești cu aceeași persoană
-        de fiecare dată, nu cu un call center, și că cine îți răspunde la telefon este
-        cine îți ține efectiv contabilitatea.
+        Suntem un birou de contabilitate din Ploiești, alături de firme, PFA-uri și
+        profesii liberale din 2017. Ținem evidența contabilă completă — de la
+        înregistrări curente și salarizare până la bilanț — și rămânem lângă tine pe
+        tot parcursul anului, nu doar în preajma termenelor. Vorbești de fiecare dată
+        cu aceeași persoană, cea care îți ține efectiv contabilitatea, nu cu un call
+        center.
       </p>
 
-      <h2>Cine lucrează pe firma ta</h2>
-
-      <ul class="people">
-        <li>
-          <p class="person__name"><Tbd label="nume expert contabil coordonator" /></p>
-          <p class="person__role">Expert contabil, membru CECCAR — carnet nr. <Tbd label="număr carnet CECCAR" /></p>
-          <p class="person__note">
-            <Tbd label="experiență și domenii — 1–2 propoziții" />
-          </p>
+      <ul class="stats">
+        <li class="stat">
+          <span class="stat__figure">{site.founded}</span>
+          <span class="stat__label">anul înființării</span>
         </li>
-        <li>
-          <p class="person__name"><Tbd label="nume al doilea membru" /></p>
-          <p class="person__role"><Tbd label="rol / calificare" /></p>
-          <p class="person__note">
-            <Tbd label="experiență și domenii — 1–2 propoziții" />
-          </p>
+        <li class="stat">
+          <span class="stat__figure">{site.clients.total}+</span>
+          <span class="stat__label">clienți mulțumiți</span>
+        </li>
+        <li class="stat">
+          <span class="stat__figure">{site.clients.active}+</span>
+          <span class="stat__label">clienți activi</span>
         </li>
       </ul>
 
@@ -77,7 +78,7 @@ import { site } from '@/data/site';
       </p>
 
       <p>
-        Suntem înregistrați la CECCAR cu autorizația nr. <Tbd label="număr autorizație CECCAR a societății" />
+        Suntem înregistrați la CECCAR cu autorizația nr. {site.registration.ceccar ? site.registration.ceccar : <Tbd label="număr autorizație CECCAR a societății" />}
         și avem asigurare de răspundere civilă profesională pentru
         <Tbd label="plafon asigurare răspundere civilă" />.
       </p>
@@ -90,11 +91,56 @@ import { site } from '@/data/site';
     padding-block: var(--space-12) var(--space-24);
   }
 
+  /* Center the reading column instead of stranding it on the left. */
+  .team .container {
+    max-width: calc(var(--width-content) + 2 * var(--space-6));
+  }
+
+  .motto {
+    max-width: 24ch;
+    margin: var(--space-6) 0 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1.15;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
   .lede {
     max-width: 58ch;
     font-size: var(--text-lg);
     color: var(--color-ink-body);
-    margin-top: var(--space-6);
+    margin-top: var(--space-4);
+  }
+
+  .stats {
+    list-style: none;
+    margin: var(--space-8) 0 0;
+    padding: var(--space-6) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+    border-top: 1px solid var(--color-line);
+    max-width: var(--width-content);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .stat__figure {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1;
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat__label {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
   }
 
   h2 {
@@ -106,35 +152,5 @@ import { site } from '@/data/site';
   p {
     max-width: var(--width-content);
     margin-bottom: var(--space-4);
-  }
-
-  .people {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-width: var(--width-content);
-    border-top: 2px solid var(--color-ink);
-  }
-
-  .people li {
-    padding: var(--space-5) 0;
-    border-bottom: 1px solid var(--color-line);
-  }
-
-  .person__name {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    color: var(--color-ink);
-    margin-bottom: var(--space-1);
-  }
-
-  .person__role {
-    font-size: var(--text-sm);
-    color: var(--color-ink-muted);
-    margin-bottom: var(--space-2);
-  }
-
-  .person__note {
-    margin-bottom: 0;
   }
 </style>

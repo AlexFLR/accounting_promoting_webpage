@@ -1,0 +1,59 @@
+---
+import LegalLayout from '@layouts/LegalLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { pathFor } from '@i18n/utils';
+
+const title = 'Cookie policy';
+const description =
+  'What cookies this site uses and how to control them. Under Romanian Law 506/2004 and the GDPR.';
+---
+
+<LegalLayout title={title} description={description} updated="2026-08-30">
+  <p class="lede">
+    This site is built statically and uses no analytics or marketing cookies by
+    default. This page explains what loads and when, under Romanian Law 506/2004
+    and Regulation (EU) 2016/679.
+  </p>
+
+  <h2>What cookies are</h2>
+  <p>
+    Cookies are small files a site can store in your browser. They may be
+    strictly necessary for the site to work, or serve other purposes such as
+    traffic analysis.
+  </p>
+
+  <h2>What we use</h2>
+  <ul>
+    <li>
+      <strong>Self-hosted fonts.</strong> We do not use Google Fonts, so no data
+      is sent to third-party servers when a page loads.
+    </li>
+    <li>
+      <strong>Google Maps, on the contact page.</strong> The map loads
+      automatically with the page. From that point Google may receive your IP
+      address and set its own cookies.
+    </li>
+    <li>
+      <strong>No analytics by default.</strong> We currently use no Google
+      Analytics or similar tool: <Tbd label="confirm whether an analytics tool is added and list its cookies" />.
+    </li>
+  </ul>
+
+  <h2>How to control cookies</h2>
+  <p>
+    You can block or delete cookies in your browser settings, including those set
+    by Google Maps. The site works normally even if you refuse them.
+  </p>
+
+  <h2>Related</h2>
+  <p>
+    See also our <a href={pathFor('privacy', 'en')}>privacy policy</a> for how we
+    process personal data.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    If we add services that use cookies, we will update this page and, where
+    required, ask for consent before enabling them.
+  </p>
+</LegalLayout>

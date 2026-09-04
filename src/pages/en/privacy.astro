@@ -1,0 +1,116 @@
+---
+import LegalLayout from '@layouts/LegalLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { site } from '@/data/site';
+import { pathFor } from '@i18n/utils';
+
+const title = 'Privacy policy';
+const description =
+  'How Valvio Contexpert Business SRL collects and processes personal data, under the GDPR and Romanian Law 190/2018.';
+---
+
+<LegalLayout title={title} description={description} updated="2026-08-30">
+  <p class="lede">
+    This policy explains what personal data we collect through this site, why,
+    and what rights you have. We process data under Regulation (EU) 2016/679
+    (GDPR) and Romanian Law 190/2018.
+  </p>
+
+  <h2>Data controller</h2>
+  <dl>
+    <dt>Name</dt>
+    <dd>{site.legalName}</dd>
+    <dt>Registered office</dt>
+    <dd>{site.address.street}, {site.address.city}, {site.address.region}</dd>
+    <dt>CUI (tax ID)</dt>
+    <dd>{site.registration.cui ? site.registration.cui : <Tbd label="CUI / CIF" />}</dd>
+    <dt>Trade Register no.</dt>
+    <dd>{site.registration.tradeRegister ? site.registration.tradeRegister : <Tbd label="Trade Register number" />}</dd>
+    <dt>Email</dt>
+    <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+    <dt>Phone</dt>
+    <dd><a href={site.phoneHref}>{site.phone}</a></dd>
+  </dl>
+  <p>
+    For any request about your personal data, email us at
+    <a href={`mailto:${site.email}`}>{site.email}</a>.
+  </p>
+
+  <h2>What we collect and why</h2>
+  <p>
+    We only collect what you send through the contact form, so we can reply and
+    prepare a quote:
+  </p>
+  <ul>
+    <li>full name;</li>
+    <li>email address;</li>
+    <li>phone number (optional);</li>
+    <li>company name (optional);</li>
+    <li>the content of your message.</li>
+  </ul>
+  <p>We do not use this data for marketing and we do not sell it to anyone.</p>
+
+  <h2>Legal basis</h2>
+  <p>
+    Processing rests on Article 6 GDPR: steps taken at your request before a
+    contract (Art. 6(1)(b)) and our legitimate interest in answering enquiries
+    (Art. 6(1)(f)). On the same legitimate-interest basis, the map on the contact
+    page loads automatically to give you directions to the office.
+  </p>
+
+  <h2>How long we keep it</h2>
+  <p>
+    We keep messages received through the form for <Tbd label="message retention period" />,
+    then delete them, unless you become a client, in which case statutory
+    accounting retention periods apply.
+  </p>
+
+  <h2>Who we share it with</h2>
+  <ul>
+    <li>our website hosting provider: <Tbd label="hosting provider" />;</li>
+    <li>
+      Google, through the map loaded on the contact page — see the
+      <a href={pathFor('cookies', 'en')}>cookie policy</a>;
+    </li>
+    <li>public authorities, only where the law requires it.</li>
+  </ul>
+
+  <h2>Transfers outside the EU / EEA</h2>
+  <p>
+    We do not transfer data outside the European Economic Area, except through the
+    Google map on the contact page, in which case Google's standard contractual
+    clauses may apply. Details: <Tbd label="transfer mechanism used by the map provider" />.
+  </p>
+
+  <h2>Your rights</h2>
+  <p>Under the GDPR you have the right to:</p>
+  <ul>
+    <li>access your data and receive a copy;</li>
+    <li>rectify inaccurate data;</li>
+    <li>erasure (the right to be forgotten);</li>
+    <li>restrict processing;</li>
+    <li>object to processing;</li>
+    <li>data portability;</li>
+    <li>withdraw consent at any time.</li>
+  </ul>
+  <p>
+    To exercise these rights, email us at
+    <a href={`mailto:${site.email}`}>{site.email}</a>. You also have the right to
+    lodge a complaint with the Romanian National Supervisory Authority for
+    Personal Data Processing (ANSPDCP),
+    <a href="https://www.dataprotection.ro" rel="noopener">dataprotection.ro</a>.
+  </p>
+
+  <h2>Security</h2>
+  <p>
+    The site is served over HTTPS only, and fonts are self-hosted, so no
+    third-party requests are made when a page loads. We apply reasonable
+    technical and organisational measures to protect the data we receive.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    We may update this policy. The version in force is the one published on this
+    page, with the last-updated date shown above.
+  </p>
+</LegalLayout>

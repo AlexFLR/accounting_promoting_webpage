@@ -1,0 +1,402 @@
+---
+/**
+ * Dev-only preview of first-viewport designs. Not linked in the nav, noindex.
+ * Three directions for the hero, each with the same orchestrated timing so the
+ * animations cascade instead of firing together:
+ *   0.0s  headline words + rolling dot
+ *   ~0.2s subtitle / sectors / CTA fade up in sequence (--reveal-i)
+ *   ~1.0s the numbers count up, once the headline has settled
+ * Pick one and it becomes the real Hero.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import AnimatedHeadline from '@components/ui/AnimatedHeadline.astro';
+import { useTranslations } from '@i18n/utils';
+import { site } from '@/data/site';
+
+const t = useTranslations('ro');
+
+const sectors = [
+  { name: t('hero.sectorMedical'), note: 'cabinete individuale și de grup' },
+  { name: t('hero.sectorVet'), note: 'clinici și cabinete' },
+  { name: t('hero.sectorLiberal'), note: 'avocați, notari, experți' },
+  { name: t('hero.sectorNgo'), note: 'asociații și fundații' },
+];
+const chips = ['Medical', 'Veterinar', 'Profesii liberale', 'ONG-uri'];
+---
+
+<BaseLayout title="Mock-up-uri — primul viewport" description="Previzualizare design" noindex locales={['ro']}>
+  <div class="mocks">
+    <header class="mocks__intro">
+      <h1>Trei direcții pentru primul viewport</h1>
+      <p>
+        Aceeași orchestrare a animației peste tot: <strong>titlul intră primul</strong>
+        (0–1,6s), apoi textul urcă în cascadă, iar <strong>cifrele numără la final</strong>
+        (~1s) — nu pornesc toate în aceeași clipă. Alege una și o fac hero-ul real.
+      </p>
+    </header>
+
+    {/* ── A ─────────────────────────────────────────────────────────── */}
+    <section class="mock">
+      <p class="mock__tag">A · Card cu domenii, în dreapta</p>
+      <div class="mh mh--split">
+        <div class="mh__copy">
+          <div data-reveal><AnimatedHeadline text={t('hero.title')} /></div>
+          <p class="mh__sub" data-reveal style="--reveal-i:1">{t('hero.subtitle')}</p>
+          <ul class="mh__stats" data-reveal style="--reveal-i:11">
+            <li data-countup data-countup-to={site.clients.total} data-countup-delay="1000">
+              <span class="mh__num"><span data-countup-num>{site.clients.total}</span>+</span>
+              <span class="mh__lbl">{t('hero.statsClientsTotal')}</span>
+            </li>
+            <li data-countup data-countup-to={site.clients.active} data-countup-delay="1150">
+              <span class="mh__num"><span data-countup-num>{site.clients.active}</span></span>
+              <span class="mh__lbl">{t('hero.statsClientsActive')}</span>
+            </li>
+          </ul>
+          <div class="mh__cta" data-reveal style="--reveal-i:3">
+            <a class="button button--primary" href="#">{t('nav.cta')}</a>
+            <a class="button button--ghost" href="#">{t('nav.services')}</a>
+          </div>
+        </div>
+        <aside class="mh__card cardA" data-reveal style="--reveal-i:12">
+          <p class="cardA__kicker">Domenii de expertiză</p>
+          <ul class="cardA__list">
+            {sectors.map((s) => (
+              <li>
+                <span class="cardA__name">{s.name}</span>
+                <span class="cardA__note">{s.note}</span>
+              </li>
+            ))}
+          </ul>
+        </aside>
+      </div>
+      <p class="mock__note">Cald, informativ. Cardul spune exact pe cine deservești — semnalul de încredere e nișa, nu recenziile.</p>
+    </section>
+
+    {/* ── B ─────────────────────────────────────────────────────────── */}
+    <section class="mock">
+      <p class="mock__tag">B · Etichete inline, fără card</p>
+      <div class="mh">
+        <div class="mh__copy mh__copy--wide">
+          <div data-reveal><AnimatedHeadline text={t('hero.title')} /></div>
+          <p class="mh__sub" data-reveal style="--reveal-i:1">{t('hero.subtitle')}</p>
+          <p class="chips__kicker" data-reveal style="--reveal-i:2">Ținem contabilitatea pentru</p>
+          <ul class="chips" data-reveal style="--reveal-i:3">
+            {chips.map((c) => <li class="chip">{c}</li>)}
+          </ul>
+          <ul class="mh__stats mh__stats--row" data-reveal style="--reveal-i:11">
+            <li data-countup data-countup-to={site.clients.total} data-countup-delay="1000">
+              <span class="mh__num"><span data-countup-num>{site.clients.total}</span>+</span>
+              <span class="mh__lbl">{t('hero.statsClientsTotal')}</span>
+            </li>
+            <li data-countup data-countup-to={site.clients.active} data-countup-delay="1150">
+              <span class="mh__num"><span data-countup-num>{site.clients.active}</span></span>
+              <span class="mh__lbl">{t('hero.statsClientsActive')}</span>
+            </li>
+          </ul>
+          <div class="mh__cta" data-reveal style="--reveal-i:4">
+            <a class="button button--primary" href="#">{t('nav.cta')}</a>
+            <a class="button button--ghost" href="#">{t('nav.services')}</a>
+          </div>
+        </div>
+      </div>
+      <p class="mock__note">Cel mai curat și modern. Fără cutie — domeniile sunt etichete discrete în coloana de text.</p>
+    </section>
+
+    {/* ── C ─────────────────────────────────────────────────────────── */}
+    <section class="mock">
+      <p class="mock__tag">C · Panou de încredere (CECCAR + domenii)</p>
+      <div class="mh mh--split">
+        <div class="mh__copy">
+          <div data-reveal><AnimatedHeadline text={t('hero.title')} /></div>
+          <p class="mh__sub" data-reveal style="--reveal-i:1">{t('hero.subtitle')}</p>
+          <ul class="mh__stats" data-reveal style="--reveal-i:11">
+            <li data-countup data-countup-to={site.clients.total} data-countup-delay="1000">
+              <span class="mh__num"><span data-countup-num>{site.clients.total}</span>+</span>
+              <span class="mh__lbl">{t('hero.statsClientsTotal')}</span>
+            </li>
+            <li data-countup data-countup-to={site.clients.active} data-countup-delay="1150">
+              <span class="mh__num"><span data-countup-num>{site.clients.active}</span></span>
+              <span class="mh__lbl">{t('hero.statsClientsActive')}</span>
+            </li>
+          </ul>
+          <div class="mh__cta" data-reveal style="--reveal-i:3">
+            <a class="button button--primary" href="#">{t('nav.cta')}</a>
+            <a class="button button--ghost" href="#">{t('nav.services')}</a>
+          </div>
+        </div>
+        <aside class="mh__card cardC" data-reveal style="--reveal-i:12">
+          <p class="cardC__badge">Membru CECCAR</p>
+          <p class="cardC__lead">Ținem contabilitatea pentru:</p>
+          <ul class="cardC__list">
+            {sectors.map((s) => <li>{s.name}</li>)}
+          </ul>
+        </aside>
+      </div>
+      <p class="mock__note">Panoul leagă autorizația CECCAR de nișă — „suntem autorizați și specializați pe tine”.</p>
+    </section>
+  </div>
+</BaseLayout>
+
+<style>
+  .mocks {
+    padding: calc(var(--island-height) + var(--space-16)) 0 var(--space-24);
+  }
+
+  .mocks__intro,
+  .mock {
+    max-width: var(--width-container);
+    margin-inline: auto;
+    padding-inline: var(--space-6);
+  }
+
+  .mocks__intro {
+    max-width: 68ch;
+    margin-bottom: var(--space-16);
+  }
+
+  .mocks__intro p {
+    margin-top: var(--space-4);
+    font-size: var(--text-lg);
+    color: var(--color-ink-body);
+  }
+
+  .mock {
+    margin-bottom: var(--space-24);
+  }
+
+  .mock__tag {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--color-brand-500);
+    margin-bottom: var(--space-3);
+  }
+
+  .mock__note {
+    margin-top: var(--space-4);
+    max-width: 60ch;
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  /* The mock hero frame. */
+  .mh {
+    display: grid;
+    align-content: center;
+    gap: var(--space-8);
+    min-height: 30rem;
+    padding: var(--space-16) var(--space-12);
+    background: var(--color-surface);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-lg);
+    box-shadow: var(--shadow-sm);
+  }
+
+  @media (min-width: 60rem) {
+    .mh--split {
+      grid-template-columns: minmax(0, 1fr) clamp(16rem, 34%, 22rem);
+      gap: var(--space-16);
+      align-items: center;
+    }
+  }
+
+  .mh__copy {
+    display: grid;
+    justify-items: start;
+    gap: var(--space-5);
+    container-type: inline-size;
+  }
+
+  .mh__copy--wide {
+    max-width: 52rem;
+  }
+
+  .mh__sub {
+    font-size: var(--text-lg);
+    color: var(--color-ink-muted);
+    max-width: 46ch;
+  }
+
+  /* Stats — shared with the real hero. */
+  .mh__stats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5) var(--space-8);
+  }
+
+  .mh__stats li {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .mh__num {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1;
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .mh__lbl {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .mh__cta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-3);
+    margin-top: var(--space-2);
+  }
+
+  /* ── A: card with sector rows + notes ─────────────────────────────── */
+  .cardA {
+    align-self: start;
+    width: 100%;
+    padding: var(--space-6);
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .cardA__kicker {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+    padding-bottom: var(--space-3);
+    border-bottom: 2px solid var(--color-ink);
+  }
+
+  .cardA__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .cardA__list li {
+    display: grid;
+    gap: 0.1rem;
+    padding: var(--space-3) 0;
+    border-bottom: 1px solid var(--color-line);
+  }
+
+  .cardA__list li:last-child {
+    border-bottom: none;
+    padding-bottom: 0;
+  }
+
+  .cardA__name {
+    font-weight: var(--weight-semi);
+    color: var(--color-ink);
+  }
+
+  .cardA__note {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  /* ── B: sector chips ──────────────────────────────────────────────── */
+  .chips__kicker {
+    font-family: var(--font-sans);
+    font-size: 0.6875rem;
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+  }
+
+  .chips {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-2);
+  }
+
+  .chip {
+    padding: var(--space-2) var(--space-4);
+    border: 1px solid var(--color-line-strong);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+    color: var(--color-ink-body);
+  }
+
+  /* ── C: trust panel ───────────────────────────────────────────────── */
+  .cardC {
+    align-self: start;
+    width: 100%;
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .cardC__badge {
+    align-self: start;
+    padding: var(--space-1) var(--space-3);
+    border: 1px solid var(--color-brand-500);
+    border-radius: var(--radius-pill);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+    color: var(--color-brand-500);
+  }
+
+  .cardC__lead {
+    font-weight: var(--weight-semi);
+    color: var(--color-ink);
+    padding-top: var(--space-2);
+    border-top: 1px solid var(--color-line);
+  }
+
+  .cardC__list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: grid;
+    gap: var(--space-2);
+  }
+
+  .cardC__list li {
+    padding-left: var(--space-4);
+    position: relative;
+    color: var(--color-ink-body);
+  }
+
+  .cardC__list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.6em;
+    width: var(--space-2);
+    height: 1px;
+    background: var(--color-ink-subtle);
+  }
+</style>
+
+{/* Reveal cascade (this page is not a snap section, so it needs its own
+    trigger) + the shared count-up. Together they show the orchestrated timing. */}
+<script>
+  document.documentElement.dataset.js = '';
+  requestAnimationFrame(() => {
+    document
+      .querySelectorAll('[data-reveal]')
+      .forEach((el) => el.classList.add('is-revealed'));
+  });
+</script>
+<script>
+  import '../scripts/countup';
+</script>

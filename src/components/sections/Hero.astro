@@ -10,26 +10,65 @@ const t = useTranslations(lang);
 {/* data-under-header: this section's background runs to the top of the
     viewport, with the island floating over it. */}
 <section id="inceput" class="hero snap-section" data-section-theme="paper" data-snap-section data-under-header>
-  <div class="container hero__content">
-    <div data-reveal><AnimatedHeadline text={t('hero.title')} /></div>
-    <p class="hero__subtitle" data-reveal style="--reveal-i:1">{t('hero.subtitle')}</p>
-    <div class="hero__actions" data-reveal style="--reveal-i:2">
-      <a class="button button--primary" href={pathFor('contact', lang)}>{t('nav.cta')}</a>
-      <a class="button button--ghost" href={pathFor('services', lang)}>{t('nav.services')}</a>
+  <div class="container hero__grid">
+    <div class="hero__content">
+      <div data-reveal><AnimatedHeadline text={t('hero.title')} /></div>
+      <p class="hero__subtitle" data-reveal style="--reveal-i:1">{t('hero.subtitle')}</p>
+
+      {/* Trust stats, counting up on arrival. Real figures (see site.clients);
+          numbers stay ink so they spend no accent budget. The launch is
+          delayed so the count starts after the headline dot settles, not with
+          it, and the reveal is held back so no "0 clienți" flashes first. */}
+      <ul class="hero__stats" data-reveal style="--reveal-i:11">
+        <li class="hero__stat" data-countup data-countup-to={site.clients.total} data-countup-delay="1000">
+          <span class="hero__stat-figure"><span data-countup-num>{site.clients.total}</span>+</span>
+          <span class="hero__stat-label">{t('hero.statsClientsTotal')}</span>
+        </li>
+        <li class="hero__stat" data-countup data-countup-to={site.clients.active} data-countup-delay="1150">
+          <span class="hero__stat-figure"><span data-countup-num>{site.clients.active}</span>+</span>
+          <span class="hero__stat-label">{t('hero.statsClientsActive')}</span>
+        </li>
+      </ul>
+
+      <div class="hero__actions" data-reveal style="--reveal-i:3">
+        <a class="button button--primary" href={pathFor('contact', lang)}>{t('nav.cta')}</a>
+        <a class="button button--ghost" href={pathFor('services', lang)}>{t('nav.services')}</a>
+      </div>
+
+      {/* Reassurance at the point of action, not a second CTA. */}
+      <p class="hero__reply" data-reveal style="--reveal-i:4">{t('home.replyTime')}</p>
+
+      {/* Credentials the headline cannot carry: licensed, local, reachable. */}
+      <ul class="hero__facts" data-reveal style="--reveal-i:5">
+        <li>{t('home.ceccar')}</li>
+        <li>{t('home.area')}</li>
+        <li>
+          <a href={site.phoneHref}>{site.phone}</a>
+        </li>
+      </ul>
     </div>
 
-    {/* The three facts a first-time visitor needs and the headline cannot
-        carry: that the firm is licensed, that it is local to them, and how
-        to reach a person without filling in a form. Deliberately quiet —
-        it is credentials, not a second call to action. */}
-    <ul class="hero__facts" data-reveal style="--reveal-i:3">
-      <li>{t('home.ceccar')}</li>
-      <li>{t('home.area')}</li>
-      <li>
-        <a href={site.phoneHref}>{site.phone}</a>
-      </li>
-    </ul>
+    {/* Specialisation card: the sectors this firm keeps the books for. Niche
+        expertise is the trust signal here, in place of a review count. */}
+    <aside class="hero__card" data-reveal style="--reveal-i:12">
+      <p class="hero__card-title">{t('hero.sectorsTitle')}</p>
+      <ul class="hero__card-list">
+        <li>{t('hero.sectorMedical')}</li>
+        <li>{t('hero.sectorVet')}</li>
+        <li>{t('hero.sectorLiberal')}</li>
+        <li>{t('hero.sectorNgo')}</li>
+      </ul>
+    </aside>
   </div>
+
+  {/* Scroll affordance: the homepage is a snap sequence and, on arrival, the
+      dot rail is the only hint that more exists. A real anchor so it works
+      without JavaScript and is reachable by keyboard. */}
+  <a class="hero__scroll" href="#ce-facem" aria-label={t('hero.scrollHint')}>
+    <svg viewBox="0 0 24 24" fill="none" aria-hidden="true" focusable="false">
+      <path d="M5 9l7 7 7-7" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" />
+    </svg>
+  </a>
 
 </section>
 
@@ -47,6 +86,7 @@ const t = useTranslations(lang);
    * screen grows the section instead of overflowing it.
    */
   .hero {
+    position: relative;
     display: grid;
     /* Sits in the upper part of the screen rather than dead-centre. The
        padding is the one value to tune if it wants to move up or down. */
@@ -64,6 +104,23 @@ const t = useTranslations(lang);
    * it. Previously this was a centred 48rem block, which pushed the hero
    * text noticeably further right than the rest of the page.
    */
+  /* Two columns on desktop: the copy on the left, the specialisation card on
+     the right; a single column below 64rem, card stacked under the copy. */
+  .hero__grid {
+    position: relative;
+    z-index: 1;
+    display: grid;
+    gap: var(--space-8);
+    align-items: start;
+  }
+
+  @media (min-width: 64rem) {
+    .hero__grid {
+      grid-template-columns: minmax(0, 1fr) clamp(15rem, 26%, 20rem);
+      gap: var(--space-12);
+    }
+  }
+
   .hero__content {
     display: grid;
     justify-items: start;
@@ -72,6 +129,48 @@ const t = useTranslations(lang);
        can shrink to stay on one line without reading the viewport width
        (which would ignore the container's max-width and padding). */
     container-type: inline-size;
+  }
+
+  /* ── Specialisation card ──────────────────────────────────
+     A raised cream card (the .card tokens). The sectors this firm keeps the
+     books for — niche expertise is the trust signal, not a review count. */
+  .hero__card {
+    align-self: start;
+    width: 100%;
+    display: grid;
+    gap: var(--space-4);
+    padding: var(--space-6);
+    background: var(--color-surface-raised);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+    box-shadow: var(--shadow-sm);
+  }
+
+  .hero__card-title {
+    font-family: var(--font-sans);
+    font-size: var(--text-sm);
+    font-weight: var(--weight-semi);
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--color-ink-muted);
+  }
+
+  .hero__card-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+  }
+
+  .hero__card-list li {
+    padding: var(--space-3) 0;
+    border-top: 1px solid var(--color-line);
+    color: var(--color-ink-body);
+    font-weight: var(--weight-semi);
+  }
+
+  .hero__card-list li:first-child {
+    padding-top: 0;
+    border-top: none;
   }
 
   /* Lead paragraph: larger, but capped to a comfortable measure. */
@@ -136,6 +235,98 @@ const t = useTranslations(lang);
     }
   }
 
+  /* ── Social proof ────────────────────────────────────────────────────
+     A quiet, monochrome line — the amber Google card stays in the Reviews
+     section. Links to the verifiable profile; the accent shows only on hover,
+     so the always-on state spends no accent budget. */
+  .hero__stats {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-5) var(--space-8);
+  }
+
+  .hero__stat {
+    display: grid;
+    gap: 0.15rem;
+  }
+
+  .hero__stat-figure {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1;
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .hero__stat-label {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .hero__stat-link {
+    display: grid;
+    gap: 0.15rem;
+    text-decoration: none;
+    color: inherit;
+  }
+
+  .hero__stat-link:hover .hero__stat-figure {
+    color: var(--color-brand-500);
+  }
+
+  /* Reassurance under the CTA. Muted, capped to a comfortable measure. */
+  .hero__reply {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+    max-width: 46ch;
+  }
+
+  /* ── Scroll cue ──────────────────────────────────────────────────────
+     Bottom-centre, clear of the right-hand dot rail. --color-ink-subtle is
+     the icon/large-text tier (3.21:1), enough for a 24px glyph. The bob is
+     switched off by the global reduced-motion rule. */
+  .hero__scroll {
+    position: absolute;
+    left: 50%;
+    bottom: var(--space-6);
+    translate: -50% 0;
+    display: grid;
+    place-items: center;
+    width: var(--tap-target);
+    height: var(--tap-target);
+    color: var(--color-ink-subtle);
+    z-index: 2;
+  }
+
+  .hero__scroll:hover {
+    color: var(--color-brand-500);
+  }
+
+  .hero__scroll svg {
+    width: 1.5rem;
+    height: 1.5rem;
+    animation: hero-bob 1.8s var(--ease-out) infinite;
+  }
+
+  @keyframes hero-bob {
+    0%,
+    100% {
+      translate: 0 0;
+    }
+    50% {
+      translate: 0 0.25rem;
+    }
+  }
+
+  @media (max-width: 48rem) {
+    .hero__scroll {
+      display: none;
+    }
+  }
+
   /* Short landscape screens: the full-height rule would squeeze the content,
      so let the section size to its contents instead. */
   @media (max-height: 34rem) {
@@ -143,5 +334,12 @@ const t = useTranslations(lang);
       min-height: 0;
       padding-bottom: var(--space-12);
     }
+    .hero__scroll {
+      display: none;
+    }
   }
 </style>
+
+<script>
+  import '../../scripts/countup';
+</script>

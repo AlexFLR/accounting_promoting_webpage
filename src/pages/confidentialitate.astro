@@ -1,0 +1,120 @@
+---
+import LegalLayout from '@layouts/LegalLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { site } from '@/data/site';
+import { pathFor } from '@i18n/utils';
+
+const title = 'Politica de confidențialitate';
+const description =
+  'Cum colectează și prelucrează Valvio Contexpert Business SRL datele cu caracter personal, conform GDPR și Legii 190/2018.';
+---
+
+<LegalLayout title={title} description={description} updated="2026-08-30">
+  <p class="lede">
+    Această politică explică ce date cu caracter personal colectăm prin acest
+    site, în ce scop și ce drepturi ai. Prelucrăm datele conform Regulamentului
+    (UE) 2016/679 (GDPR) și Legii nr. 190/2018.
+  </p>
+
+  <h2>Operatorul de date</h2>
+  <dl>
+    <dt>Denumire</dt>
+    <dd>{site.legalName}</dd>
+    <dt>Sediu</dt>
+    <dd>{site.address.street}, {site.address.city}, {site.address.region}</dd>
+    <dt>CUI</dt>
+    <dd>{site.registration.cui ? site.registration.cui : <Tbd label="CUI / CIF" />}</dd>
+    <dt>Nr. Registrul Comerțului</dt>
+    <dd>{site.registration.tradeRegister ? site.registration.tradeRegister : <Tbd label="nr. Registrul Comerțului" />}</dd>
+    <dt>Email</dt>
+    <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+    <dt>Telefon</dt>
+    <dd><a href={site.phoneHref}>{site.phone}</a></dd>
+  </dl>
+  <p>
+    Pentru orice solicitare privind datele tale personale, scrie-ne la
+    <a href={`mailto:${site.email}`}>{site.email}</a>.
+  </p>
+
+  <h2>Ce date colectăm și în ce scop</h2>
+  <p>
+    Colectăm doar datele pe care ni le transmiți prin formularul de contact,
+    pentru a-ți răspunde la cerere și a-ți pregăti o ofertă:
+  </p>
+  <ul>
+    <li>nume complet;</li>
+    <li>adresă de email;</li>
+    <li>număr de telefon (opțional);</li>
+    <li>numele firmei (opțional);</li>
+    <li>conținutul mesajului tău.</li>
+  </ul>
+  <p>
+    Nu folosim aceste date pentru marketing și nu le vindem niciunei terțe
+    părți.
+  </p>
+
+  <h2>Temeiul legal</h2>
+  <p>
+    Prelucrarea se întemeiază pe articolul 6 din GDPR: demersuri la cererea ta
+    înainte de încheierea unui contract (art. 6 alin. 1 lit. b) și interesul
+    nostru legitim de a răspunde solicitărilor (art. 6 alin. 1 lit. f). Pe același
+    temei al interesului legitim, harta de pe pagina de contact se încarcă automat,
+    pentru a-ți oferi indicații către birou.
+  </p>
+
+  <h2>Cât timp păstrăm datele</h2>
+  <p>
+    Păstrăm mesajele primite prin formular timp de <Tbd label="perioada de păstrare a mesajelor" />,
+    după care le ștergem, dacă nu devii client, situație în care se aplică
+    termenele legale de arhivare contabilă.
+  </p>
+
+  <h2>Cui divulgăm datele</h2>
+  <ul>
+    <li>furnizorului de găzduire a site-ului: <Tbd label="furnizorul de hosting" />;</li>
+    <li>
+      Google, prin harta încărcată pe pagina de contact — vezi
+      <a href={pathFor('cookies', 'ro')}>politica de cookie-uri</a>;
+    </li>
+    <li>autorităților publice, doar când legea ne obligă.</li>
+  </ul>
+
+  <h2>Transferuri în afara UE / SEE</h2>
+  <p>
+    Nu transferăm date în afara Spațiului Economic European, cu excepția
+    hărții Google de pe pagina de contact, caz în care se pot aplica clauzele
+    contractuale standard ale Google. Detalii: <Tbd label="mecanismul de transfer folosit de furnizorul hărții" />.
+  </p>
+
+  <h2>Drepturile tale</h2>
+  <p>Conform GDPR, ai dreptul de:</p>
+  <ul>
+    <li>acces la datele tale și o copie a acestora;</li>
+    <li>rectificare a datelor inexacte;</li>
+    <li>ștergere (dreptul de a fi uitat);</li>
+    <li>restricționare a prelucrării;</li>
+    <li>opoziție la prelucrare;</li>
+    <li>portabilitate a datelor;</li>
+    <li>retragere a consimțământului, oricând.</li>
+  </ul>
+  <p>
+    Îți poți exercita aceste drepturi scriindu-ne la
+    <a href={`mailto:${site.email}`}>{site.email}</a>. Ai, de asemenea, dreptul
+    de a depune o plângere la Autoritatea Națională de Supraveghere a Prelucrării
+    Datelor cu Caracter Personal (ANSPDCP),
+    <a href="https://www.dataprotection.ro" rel="noopener">dataprotection.ro</a>.
+  </p>
+
+  <h2>Securitate</h2>
+  <p>
+    Site-ul este servit exclusiv prin HTTPS, iar fonturile sunt găzduite local,
+    fără apeluri către servicii terțe la încărcarea paginii. Aplicăm măsuri
+    tehnice și organizatorice rezonabile pentru a proteja datele primite.
+  </p>
+
+  <h2>Modificări</h2>
+  <p>
+    Putem actualiza această politică. Versiunea în vigoare este cea publicată pe
+    această pagină, cu data ultimei actualizări indicată mai sus.
+  </p>
+</LegalLayout>

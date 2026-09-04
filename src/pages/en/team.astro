@@ -22,27 +22,29 @@ import { site } from '@/data/site';
     <div class="container">
       <h1>Our team</h1>
 
+      <p class="motto">“By your side all year — not just at the deadline.”</p>
+
       <p class="lede">
-        We are a small practice in Ploiești. That means you speak to the same
-        person every time, and whoever answers the phone is the person who
-        actually keeps your books.
+        We are an accounting practice in Ploiești, working with companies, sole
+        traders and liberal professions since 2017. We keep the full set of books
+        — from day-to-day entries and payroll to the annual accounts — and stay
+        close throughout the year, not only around the deadlines. You speak to the
+        same person every time, the one who actually keeps your books, not a call
+        centre.
       </p>
 
-      <h2>Who works on your company</h2>
-
-      <ul class="people">
-        <li>
-          <p class="person__name"><Tbd label="nume expert contabil coordonator" /></p>
-          <p class="person__role">
-            Chartered accountant, CECCAR member — licence no.
-            <Tbd label="număr carnet CECCAR" />
-          </p>
-          <p class="person__note"><Tbd label="experiență și domenii — 1–2 propoziții" /></p>
+      <ul class="stats">
+        <li class="stat">
+          <span class="stat__figure">{site.founded}</span>
+          <span class="stat__label">founded</span>
         </li>
-        <li>
-          <p class="person__name"><Tbd label="nume al doilea membru" /></p>
-          <p class="person__role"><Tbd label="rol / calificare" /></p>
-          <p class="person__note"><Tbd label="experiență și domenii — 1–2 propoziții" /></p>
+        <li class="stat">
+          <span class="stat__figure">{site.clients.total}+</span>
+          <span class="stat__label">satisfied clients</span>
+        </li>
+        <li class="stat">
+          <span class="stat__figure">{site.clients.active}+</span>
+          <span class="stat__label">active clients</span>
         </li>
       </ul>
 
@@ -78,7 +80,7 @@ import { site } from '@/data/site';
 
       <p>
         We are registered with CECCAR, the Romanian body of chartered accountants,
-        under authorisation no. <Tbd label="număr autorizație CECCAR a societății" />,
+        under authorisation no. {site.registration.ceccar ? site.registration.ceccar : <Tbd label="număr autorizație CECCAR a societății" />},
         and carry professional indemnity insurance of
         <Tbd label="plafon asigurare răspundere civilă" />.
       </p>
@@ -91,11 +93,51 @@ import { site } from '@/data/site';
     padding-block: var(--space-12) var(--space-24);
   }
 
+  .motto {
+    max-width: 26ch;
+    margin: var(--space-6) 0 0;
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1.15;
+    color: var(--color-ink);
+    text-wrap: balance;
+  }
+
   .lede {
     max-width: 58ch;
     font-size: var(--text-lg);
     color: var(--color-ink-body);
-    margin-top: var(--space-6);
+    margin-top: var(--space-4);
+  }
+
+  .stats {
+    list-style: none;
+    margin: var(--space-8) 0 0;
+    padding: var(--space-6) 0 0;
+    display: flex;
+    flex-wrap: wrap;
+    gap: var(--space-8);
+    border-top: 1px solid var(--color-line);
+    max-width: var(--width-content);
+  }
+
+  .stat {
+    display: flex;
+    flex-direction: column;
+    gap: var(--space-1);
+  }
+
+  .stat__figure {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1;
+    color: var(--color-ink);
+    font-variant-numeric: tabular-nums;
+  }
+
+  .stat__label {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
   }
 
   h2 {
@@ -107,35 +149,5 @@ import { site } from '@/data/site';
   p {
     max-width: var(--width-content);
     margin-bottom: var(--space-4);
-  }
-
-  .people {
-    list-style: none;
-    padding: 0;
-    margin: 0;
-    max-width: var(--width-content);
-    border-top: 2px solid var(--color-ink);
-  }
-
-  .people li {
-    padding: var(--space-5) 0;
-    border-bottom: 1px solid var(--color-line);
-  }
-
-  .person__name {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    color: var(--color-ink);
-    margin-bottom: var(--space-1);
-  }
-
-  .person__role {
-    font-size: var(--text-sm);
-    color: var(--color-ink-muted);
-    margin-bottom: var(--space-2);
-  }
-
-  .person__note {
-    margin-bottom: 0;
   }
 </style>

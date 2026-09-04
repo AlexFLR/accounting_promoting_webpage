@@ -12,3 +12,11 @@ const t = useTranslations('ro');
     <ContactForm />
   </section>
 </BaseLayout>
+
+<style>
+  /* Center the form column to match the other inner pages, instead of
+     stranding it on the left of the wide container. */
+  .container {
+    max-width: calc(var(--width-content) + 2 * var(--space-6));
+  }
+</style>

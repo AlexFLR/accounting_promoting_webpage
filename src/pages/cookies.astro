@@ -1,0 +1,60 @@
+---
+import LegalLayout from '@layouts/LegalLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { pathFor } from '@i18n/utils';
+
+const title = 'Politica de cookie-uri';
+const description =
+  'Ce cookie-uri folosește acest site și cum le poți controla. Conform Legii 506/2004 și GDPR.';
+---
+
+<LegalLayout title={title} description={description} updated="2026-08-30">
+  <p class="lede">
+    Acest site este construit static și nu folosește cookie-uri de analiză sau
+    de marketing în mod implicit. Această pagină explică ce se încarcă și când,
+    conform Legii nr. 506/2004 și Regulamentului (UE) 2016/679.
+  </p>
+
+  <h2>Ce sunt cookie-urile</h2>
+  <p>
+    Cookie-urile sunt fișiere mici pe care un site le poate stoca în browserul
+    tău. Pot fi strict necesare funcționării site-ului sau pot servi altor
+    scopuri, precum analiza traficului.
+  </p>
+
+  <h2>Ce folosim</h2>
+  <ul>
+    <li>
+      <strong>Fonturi găzduite local.</strong> Nu folosim Google Fonts, deci nu
+      se trimit date către servere terțe la încărcarea paginii.
+    </li>
+    <li>
+      <strong>Harta Google, pe pagina de contact.</strong> Harta se încarcă
+      automat împreună cu pagina. Din acel moment, Google poate primi adresa ta
+      IP și poate seta cookie-uri proprii.
+    </li>
+    <li>
+      <strong>Fără analiză implicită.</strong> În prezent nu folosim Google
+      Analytics sau instrumente similare: <Tbd label="confirmă dacă se adaugă un instrument de analiză și listează-i cookie-urile" />.
+    </li>
+  </ul>
+
+  <h2>Cum controlezi cookie-urile</h2>
+  <p>
+    Poți bloca sau șterge cookie-urile din setările browserului tău, inclusiv pe
+    cele setate de harta Google. Site-ul funcționează normal chiar dacă le
+    refuzi.
+  </p>
+
+  <h2>Legături utile</h2>
+  <p>
+    Vezi și <a href={pathFor('privacy', 'ro')}>politica de confidențialitate</a>
+    pentru modul în care prelucrăm datele cu caracter personal.
+  </p>
+
+  <h2>Modificări</h2>
+  <p>
+    Dacă adăugăm servicii care folosesc cookie-uri, vom actualiza această pagină
+    și, unde e cazul, vom cere consimțământul înainte de a le activa.
+  </p>
+</LegalLayout>

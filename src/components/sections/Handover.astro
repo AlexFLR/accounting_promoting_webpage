@@ -10,7 +10,6 @@
  * an order, and the order is the information.
  */
 import Section from '@components/ui/Section.astro';
-import Tbd from '@components/ui/Tbd.astro';
 import { pathFor, getLangFromUrl, useTranslations, type Lang } from '@i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
@@ -61,6 +60,11 @@ const stepsByLang: Record<Lang, { title: string; body: string }[]> = {
 };
 
 const steps = stepsByLang[lang];
+
+const handoverDuration: Record<Lang, string> = {
+  ro: '1 zi lucrătoare',
+  en: 'one working day',
+};
 ---
 
 <Section section="preluare">
@@ -81,7 +85,7 @@ const steps = stepsByLang[lang];
   <p class="after">
     <a class="button button--primary" href={pathFor('contact', lang)}>{t('nav.cta')}</a>
     <span class="after__note">
-      {t('home.handoverNote')} <Tbd label="durata preluării" />. {t('home.replyTime')}
+      {t('home.handoverNote')} {handoverDuration[lang]}. {t('home.replyTime')}
     </span>
   </p>
 </Section>

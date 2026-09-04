@@ -2,30 +2,17 @@
 /**
  * Office details and the map.
  *
- * The map is a FACADE: nothing loads from Google until the visitor asks for
- * it. The standard embed sets cookies and sends the visitor's IP to Google
- * before any consent is given — a real GDPR exposure for a Romanian firm —
- * and drags in over a megabyte of JavaScript onto a page that otherwise
- * ships almost none.
- *
- * It also earns nothing in return: an embedded map is not a local ranking
- * signal. What ranks a firm in the map pack is the Business Profile plus
- * consistent NAP and LocalBusiness schema, both of which this page already
- * has. The map is here for the visitor who wants directions, and nobody else.
- *
- * The NAP block is the part search cares about, and it is plain HTML using
- * the same strings as the structured data in the head — they must never
- * disagree.
+ * The map embed loads with the page (lazily). The NAP block is plain HTML
+ * using the same strings as the LocalBusiness schema in the head — the two
+ * must never disagree.
  */
 import Section from '@components/ui/Section.astro';
 import { site } from '@/data/site';
-import Tbd from '@components/ui/Tbd.astro';
 import { getLangFromUrl, useTranslations } from '@i18n/utils';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
 
-const fullAddress = `${site.address.street}, ${site.address.city}`;
 const mapsQuery = encodeURIComponent(`${site.name}, ${site.address.street}, ${site.address.postalCode} ${site.address.city}`);
 const mapsLink = `https://www.google.com/maps/search/?api=1&query=${mapsQuery}`;
 const embedSrc = `https://www.google.com/maps?q=${mapsQuery}&output=embed`;
@@ -74,53 +61,25 @@ const rows = [
             <a class="reg__title" href={`mailto:${site.email}`}>{site.email}</a>
           </span>
         </div>
-        <div class="reg__row">
-          <span class="reg__ref">P</span>
-          <span class="reg__main">
-            <span class="reg__note">{t('office.parking')}</span>
-            <span class="reg__title"><Tbd label="detalii parcare / acces" /></span>
-          </span>
-        </div>
       </address>
 
     </div>
 
-    {/* Facade — an honest button, not a fake map image with a play icon. */}
-    <figure class="map" data-map>
-      <div class="map__facade" data-map-facade>
-        <p class="map__addr">{fullAddress}</p>
-        <div class="map__actions">
-          <button class="button button--primary" type="button" data-map-load>
-            {t('map.load')}
-          </button>
-          <a class="button button--ghost" href={mapsLink} target="_blank" rel="noopener">
-            {t('map.open')}
-          </a>
-        </div>
-        <p class="map__privacy">
-{t('map.privacy')}
-        </p>
-      </div>
+    <figure class="map">
+      <iframe
+        class="map__frame"
+        src={embedSrc}
+        title={`Harta către biroul din ${site.address.city}`}
+        loading="lazy"
+        referrerpolicy="no-referrer-when-downgrade"
+        allowfullscreen
+      ></iframe>
+      <figcaption class="map__note">
+        <a href={mapsLink} target="_blank" rel="noopener">{t('map.open')}</a>
+      </figcaption>
     </figure>
   </div>
 </Section>
-
-<script is:inline define:vars={{ embedSrc, city: site.address.city }}>
-  const wrap = document.querySelector('[data-map]');
-  const facade = wrap?.querySelector('[data-map-facade]');
-  const button = wrap?.querySelector('[data-map-load]');
-
-  button?.addEventListener('click', () => {
-    const frame = document.createElement('iframe');
-    frame.src = embedSrc;
-    frame.title = `Harta către biroul din ${city}`;
-    frame.loading = 'lazy';
-    frame.referrerPolicy = 'no-referrer-when-downgrade';
-    frame.setAttribute('allowfullscreen', '');
-    frame.className = 'map__frame';
-    facade.replaceWith(frame);
-  });
-</script>
 
 <style>
   .loc {
@@ -143,45 +102,18 @@ const rows = [
   /* ── Map ────────────────────────────────────────────────────────────── */
   .map {
     margin: 0;
+  }
+
+  .map__frame {
+    display: block;
+    width: 100%;
     aspect-ratio: 4 / 3;
     border: 1px solid var(--color-line-strong);
-    overflow: hidden;
     background: var(--color-surface);
   }
 
-  .map__facade {
-    height: 100%;
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    justify-content: flex-end;
-    gap: var(--space-4);
-    padding: var(--space-5);
-  }
-
-  .map__addr {
-    font-family: var(--font-display);
-    font-size: var(--text-xl);
-    color: var(--color-ink);
-    max-width: 16ch;
-    margin-right: auto;
-  }
-
-  .map__actions {
-    display: flex;
-    flex-wrap: wrap;
-    gap: var(--space-2);
-  }
-
-  .map__privacy {
+  .map__note {
+    margin-top: var(--space-2);
     font-size: var(--text-sm);
-    color: var(--color-ink-muted);
-  }
-
-  .map :global(.map__frame) {
-    display: block;
-    width: 100%;
-    height: 100%;
-    border: 0;
   }
 </style>

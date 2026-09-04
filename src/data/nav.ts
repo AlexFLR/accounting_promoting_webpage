@@ -2,6 +2,17 @@ import type { Lang } from '@i18n/utils';
 import type { RouteKey } from '@i18n/utils';
 
 /**
+ * The routes that appear in the primary nav — a subset of all routes. The
+ * legal pages (privacy, cookies, terms) are reachable from the footer only,
+ * so they are excluded here; every key below must also have a `nav.*` label
+ * in i18n/ui.ts, which is what this narrowing guarantees at compile time.
+ */
+export type NavKey = Extract<
+  RouteKey,
+  'home' | 'services' | 'about' | 'team' | 'blog' | 'contact'
+>;
+
+/**
  * Primary navigation, declared per language rather than filtered from one
  * list. The two sets genuinely differ — Romanian has an "Despre" group with
  * a team page behind it, English does not — and an explicit pair of arrays
@@ -10,7 +21,7 @@ import type { RouteKey } from '@i18n/utils';
  * Nothing here may link to a page that does not exist in that language.
  */
 export interface NavItem {
-  key: RouteKey;
+  key: NavKey;
   /** A group renders as a label with a submenu, not as its own destination. */
   children?: NavItem[];
 }

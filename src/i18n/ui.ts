@@ -32,6 +32,14 @@ export const ui = {
     'hero.title': 'Your numbers, on point',
     'hero.subtitle':
       'Bookkeeping, payroll and tax filing for small companies and sole traders in Ploiești and Prahova county, Romania.',
+    'hero.scrollHint': 'Scroll down',
+    'hero.statsClientsTotal': 'Clients since 2017',
+    'hero.statsClientsActive': 'Active clients',
+    'hero.sectorsTitle': 'Areas of specialisation',
+    'hero.sectorMedical': 'Medical services',
+    'hero.sectorVet': 'Veterinary services',
+    'hero.sectorLiberal': 'Liberal professions',
+    'hero.sectorNgo': 'NGOs & associations',
 
     'contact.heading': 'Request a quote',
     'contact.name': 'Full name',
@@ -57,6 +65,8 @@ export const ui = {
     'footer.hours': 'Opening hours',
     'footer.legal': 'Legal',
     'footer.privacy': 'Privacy policy',
+    'footer.cookies': 'Cookie policy',
+    'footer.terms': 'Terms & conditions',
 
     'a11y.skipToContent': 'Skip to main content',
     'a11y.languagePicker': 'Choose language',
@@ -68,10 +78,12 @@ export const ui = {
     'home.enOnlyNote':
       'Payroll, annual accounts, tax returns and statutory audit reports are also available — those pages are written in Romanian.',
     'home.reviewsIntro':
-      'Reviews are published on our Google profile, where they can be verified — we cannot edit them and we cannot delete them.',
+      'Real reviews, verifiable any time on our Google profile.',
     'home.reviewsLink': 'See the reviews on Google',
     'home.handoverNote': 'The whole process takes',
     'home.replyTime': 'We reply within one working day.',
+    'home.onGoogle': 'on Google',
+    'home.reviewsWord': 'reviews',
     'home.ceccar': 'CECCAR member',
     'home.area': 'Ploiești and Prahova county',
     'office.address': 'Address',
@@ -89,6 +101,10 @@ export const ui = {
     'services.related': 'Related services',
     'services.backToHub': '← All services',
     'services.hubIntro': 'Choose the service that matches your situation.',
+
+    'legal.updated': 'Last updated',
+    'legal.draftNotice':
+      'This is a working draft, not legal advice. Have it reviewed by a Romanian lawyer and fill in every highlighted to-be-completed item before publishing.',
   },
   ro: {
     'nav.home': 'Acasă',
@@ -102,6 +118,14 @@ export const ui = {
     'hero.title': 'Punem cifrele la punct',
     'hero.subtitle':
       'Evidență contabilă, salarizare și declarații fiscale pentru firme mici și PFA din Ploiești și județul Prahova.',
+    'hero.scrollHint': 'Derulează în jos',
+    'hero.statsClientsTotal': 'Clienți din 2017',
+    'hero.statsClientsActive': 'Clienți activi',
+    'hero.sectorsTitle': 'Domenii de specializare',
+    'hero.sectorMedical': 'Servicii medicale',
+    'hero.sectorVet': 'Servicii veterinare',
+    'hero.sectorLiberal': 'Profesii liberale',
+    'hero.sectorNgo': 'ONG-uri și asociații',
 
     'contact.heading': 'Cere o ofertă',
     'contact.name': 'Nume complet',
@@ -127,6 +151,8 @@ export const ui = {
     'footer.hours': 'Program',
     'footer.legal': 'Legal',
     'footer.privacy': 'Politica de confidențialitate',
+    'footer.cookies': 'Politica de cookie-uri',
+    'footer.terms': 'Termeni și condiții',
 
     'a11y.skipToContent': 'Sari la conținutul principal',
     'a11y.languagePicker': 'Alege limba',
@@ -137,10 +163,12 @@ export const ui = {
     'home.allServices': 'Toate serviciile, cu detalii și tarife →',
     'home.enOnlyNote': '',
     'home.reviewsIntro':
-      'Recenziile sunt publicate pe profilul nostru Google, unde pot fi verificate — nu le putem edita și nu le putem șterge.',
+      'Recenzii reale, verificabile oricând pe profilul nostru de Google.',
     'home.reviewsLink': 'Vezi recenziile pe Google',
     'home.handoverNote': 'Tot procesul durează',
     'home.replyTime': 'Răspundem în maximum o zi lucrătoare.',
+    'home.onGoogle': 'pe Google',
+    'home.reviewsWord': 'recenzii',
     'home.ceccar': 'Membru CECCAR',
     'home.area': 'Ploiești și județul Prahova',
     'office.address': 'Adresă',
@@ -158,6 +186,10 @@ export const ui = {
     'services.related': 'Servicii conexe',
     'services.backToHub': '← Toate serviciile',
     'services.hubIntro': 'Alege serviciul care se potrivește situației tale.',
+
+    'legal.updated': 'Ultima actualizare',
+    'legal.draftNotice':
+      'Acesta este un document în lucru, nu consultanță juridică. Solicită verificarea de către un jurist și completează fiecare element marcat ca fiind de completat înainte de publicare.',
   },
 } as const;
 
@@ -166,6 +198,6 @@ export const ui = {
  * localised URLs rank meaningfully better in local search.
  */
 export const routes = {
-  ro: { home: '', services: 'servicii', about: 'echipa', team: 'echipa', blog: 'blog', contact: 'contact' },
-  en: { home: '', services: 'services', about: 'team', team: 'team', blog: 'blog', contact: 'contact' },
+  ro: { home: '', services: 'servicii', about: 'echipa', team: 'echipa', blog: 'blog', contact: 'contact', privacy: 'confidentialitate', cookies: 'cookies', terms: 'termeni' },
+  en: { home: '', services: 'services', about: 'team', team: 'team', blog: 'blog', contact: 'contact', privacy: 'privacy', cookies: 'cookies', terms: 'terms' },
 } as const;

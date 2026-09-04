@@ -1,0 +1,95 @@
+---
+import LegalLayout from '@layouts/LegalLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { site } from '@/data/site';
+import { pathFor } from '@i18n/utils';
+
+const title = 'Terms & conditions';
+const description =
+  'The terms for using the Valvio Contexpert Business SRL website, plus the firm identification details.';
+---
+
+<LegalLayout title={title} description={description} updated="2026-08-30">
+  <p class="lede">
+    These terms govern your use of this website. By using it, you agree to them.
+  </p>
+
+  <h2>Company identification</h2>
+  <dl>
+    <dt>Name</dt>
+    <dd>{site.legalName}</dd>
+    <dt>Legal form</dt>
+    <dd>Limited liability company (SRL)</dd>
+    <dt>Registered office</dt>
+    <dd>{site.address.street}, {site.address.city}, {site.address.region}, {site.address.postalCode}</dd>
+    <dt>CUI (tax ID)</dt>
+    <dd>{site.registration.cui ? site.registration.cui : <Tbd label="CUI / CIF" />}</dd>
+    <dt>Trade Register no.</dt>
+    <dd>{site.registration.tradeRegister ? site.registration.tradeRegister : <Tbd label="Trade Register number" />}</dd>
+    <dt>Share capital</dt>
+    <dd>{site.registration.shareCapital ? site.registration.shareCapital : <Tbd label="share capital" />}</dd>
+    <dt>CECCAR authorisation</dt>
+    <dd>{site.registration.ceccar ? site.registration.ceccar : <Tbd label="CECCAR authorisation number" />}</dd>
+    <dt>Email</dt>
+    <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+    <dt>Phone</dt>
+    <dd><a href={site.phoneHref}>{site.phone}</a></dd>
+  </dl>
+
+  <h2>Purpose of the site</h2>
+  <p>
+    This site presents the accounting services offered by {site.name}. The
+    information is general and does not constitute a binding contractual offer.
+    Services are engaged separately, under a dedicated contract.
+  </p>
+
+  <h2>Tax information</h2>
+  <p>
+    The articles and tax explanations on this site are general information, valid
+    at the date of publication. Legislation changes often and every situation
+    differs, so they do not replace tailored advice. We accept no liability for
+    decisions taken solely on the basis of information published here.
+  </p>
+
+  <h2>Intellectual property</h2>
+  <p>
+    The site's content — text, visual identity, structure — belongs to
+    {site.legalName} and may not be reproduced without our permission.
+  </p>
+
+  <h2>Data protection</h2>
+  <p>
+    How we process personal data is described in our
+    <a href={pathFor('privacy', 'en')}>privacy policy</a> and
+    <a href={pathFor('cookies', 'en')}>cookie policy</a>.
+  </p>
+
+  <h2>Dispute resolution</h2>
+  <p>
+    If you have a complaint, email us first at
+    <a href={`mailto:${site.email}`}>{site.email}</a> and we will try to resolve
+    it directly. You may also contact:
+  </p>
+  <ul>
+    <li>
+      the Romanian National Authority for Consumer Protection (ANPC),
+      <a href="https://anpc.ro" rel="noopener">anpc.ro</a>;
+    </li>
+    <li>
+      the EU online dispute resolution platform,
+      <a href="https://ec.europa.eu/consumers/odr" rel="noopener">ec.europa.eu/consumers/odr</a>.
+    </li>
+  </ul>
+
+  <h2>Governing law</h2>
+  <p>
+    These terms are governed by Romanian law, and any disputes fall under the
+    jurisdiction of the Romanian courts.
+  </p>
+
+  <h2>Changes</h2>
+  <p>
+    We may update these terms. The version in force is the one published on this
+    page, with the last-updated date shown above.
+  </p>
+</LegalLayout>

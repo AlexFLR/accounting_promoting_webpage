@@ -1,6 +1,7 @@
 ---
 import { getLangFromUrl, useTranslations, pathFor } from '@i18n/utils';
 import { site } from '@/data/site';
+import Tbd from '@components/ui/Tbd.astro';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
@@ -16,6 +17,16 @@ const year = new Date().getFullYear();
         <a href={site.phoneHref}>{site.phone}</a><br />
         <a href={`mailto:${site.email}`}>{site.email}</a>
       </address>
+      <dl class="footer__reg">
+        <div>
+          <dt>CUI</dt>
+          <dd>{site.registration.cui ? site.registration.cui : <Tbd label="CUI" />}</dd>
+        </div>
+        <div>
+          <dt>Reg. Com.</dt>
+          <dd>{site.registration.tradeRegister ? site.registration.tradeRegister : <Tbd label="nr. Reg. Com." />}</dd>
+        </div>
+      </dl>
     </div>
 
     <div>
@@ -29,6 +40,9 @@ const year = new Date().getFullYear();
       <h2 class="footer__heading">{t('footer.legal')}</h2>
       <ul class="footer__list">
         <li><a href={pathFor('contact', lang)}>{t('nav.contact')}</a></li>
+        <li><a href={pathFor('privacy', lang)}>{t('footer.privacy')}</a></li>
+        <li><a href={pathFor('cookies', lang)}>{t('footer.cookies')}</a></li>
+        <li><a href={pathFor('terms', lang)}>{t('footer.terms')}</a></li>
       </ul>
     </div>
   </div>
@@ -74,6 +88,30 @@ const year = new Date().getFullYear();
   address {
     font-style: normal;
     color: var(--color-ink-muted);
+  }
+
+  .footer__reg {
+    margin-top: var(--space-3);
+    display: grid;
+    gap: var(--space-1);
+    color: var(--color-ink-muted);
+  }
+
+  .footer__reg > div {
+    display: flex;
+    gap: var(--space-2);
+  }
+
+  .footer__reg dt {
+    font-weight: var(--weight-semi);
+  }
+
+  .footer__reg dt::after {
+    content: ':';
+  }
+
+  .footer__reg dd {
+    margin: 0;
   }
 
   .footer__bottom {

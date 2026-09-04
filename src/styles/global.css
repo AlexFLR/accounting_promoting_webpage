@@ -19,6 +19,16 @@ html {
   scroll-padding-top: calc(var(--island-height) + var(--space-8));
 }
 
+/* On the snap homepage every section carries its own header clearance in its
+   top padding (Section.astro / Hero.astro). Zeroing the anchor offset here stops
+   that clearance being counted twice, so clicking a section dot lands the
+   heading just under the header instead of a screenful too low — and, being all
+   rem, it lands identically at 80 / 100 / 125% zoom. Non-snap pages keep the
+   offset above for their own in-page anchors. */
+html[data-snap] {
+  scroll-padding-top: 0;
+}
+
 @media (prefers-reduced-motion: reduce) {
   html {
     scroll-behavior: auto;
@@ -307,8 +317,13 @@ html[data-snap] {
 /* ── Entrance reveal ────────────────────────────────────────────────────
    Content is visible by default and only hidden once JavaScript has
    confirmed it can reveal it again. Baking `opacity: 0` into the HTML would
-   leave the page blank for anyone whose script fails to run. */
-html[data-js] [data-reveal] {
+   leave the page blank for anyone whose script fails to run.
+
+   `:not([data-anim])` opts a target out of this default fade so it can carry
+   a bespoke reveal instead — the drawn rules, rolling figures and stamped
+   labels on the homepage, defined in Section.astro. The same observer drives
+   them; only the finished-state CSS differs. */
+html[data-js] [data-reveal]:not([data-anim]) {
   opacity: 0;
   transform: translateY(1.25rem);
   transition:
@@ -317,7 +332,7 @@ html[data-js] [data-reveal] {
   transition-delay: calc(var(--reveal-i, 0) * 90ms);
 }
 
-html[data-js] [data-reveal].is-revealed {
+html[data-js] [data-reveal]:not([data-anim]).is-revealed {
   opacity: 1;
   transform: none;
 }

@@ -1,0 +1,150 @@
+---
+/**
+ * Shared shell for the legal pages (privacy, cookies, terms).
+ *
+ * Long-form text on the system sans at the article measure — the same
+ * treatment as the service pages, minus the service registry. Deliberately
+ * kept off the serif: these are reference pages, not editorial articles, and
+ * are not worth pulling Garamontio onto the critical path for.
+ */
+import BaseLayout from '@layouts/BaseLayout.astro';
+import { getLangFromUrl, useTranslations, type Lang } from '@i18n/utils';
+
+interface Props {
+  title: string;
+  description: string;
+  /** ISO date (YYYY-MM-DD) the text was last edited. */
+  updated: string;
+  locales?: Lang[];
+}
+
+const { title, description, updated, locales }: Props = Astro.props;
+const lang = getLangFromUrl(Astro.url);
+const t = useTranslations(lang);
+const updatedLabel = new Date(updated).toLocaleDateString(lang, {
+  year: 'numeric',
+  month: 'long',
+  day: 'numeric',
+});
+---
+
+<BaseLayout title={title} description={description} locales={locales}>
+  <article class="legal">
+    <div class="container">
+      <h1>{title}</h1>
+      <p class="legal__meta">
+        {t('legal.updated')}: <time datetime={updated}>{updatedLabel}</time>
+      </p>
+
+      <div class="legal__body">
+        <slot />
+      </div>
+
+      <p class="legal__notice" role="note">{t('legal.draftNotice')}</p>
+    </div>
+  </article>
+</BaseLayout>
+
+<style>
+  .legal {
+    padding-block: var(--space-12) var(--space-24);
+  }
+
+  /* Center the reading column instead of stranding it on the left. */
+  .legal .container {
+    max-width: calc(var(--width-content) + 2 * var(--space-6));
+  }
+
+  h1 {
+    max-width: 24ch;
+  }
+
+  .legal__meta {
+    margin-top: var(--space-3);
+    color: var(--color-ink-muted);
+    font-size: var(--text-sm);
+  }
+
+  .legal__body {
+    max-width: var(--width-content);
+    margin-top: var(--space-8);
+  }
+
+  .legal__body :global(h2) {
+    margin-top: var(--space-12);
+    margin-bottom: var(--space-4);
+  }
+
+  .legal__body :global(h3) {
+    margin-top: var(--space-8);
+    margin-bottom: var(--space-3);
+  }
+
+  .legal__body :global(p) {
+    margin-bottom: var(--space-4);
+  }
+
+  /* Long identifiers and URLs must not force a horizontal scroll. */
+  .legal__body :global(a) {
+    overflow-wrap: anywhere;
+  }
+
+  .legal__body :global(ul) {
+    columns: 16rem 2;
+    column-gap: var(--space-8);
+    margin: 0 0 var(--space-4);
+    padding-left: 0;
+    list-style: none;
+    border-top: 1px solid var(--color-line);
+  }
+
+  /* Hairline-ruled list — a ledger, not a bulleted brochure. */
+  .legal__body :global(ul li) {
+    padding: var(--space-3) 0 var(--space-3) var(--space-6);
+    border-bottom: 1px solid var(--color-line);
+    position: relative;
+    break-inside: avoid;
+  }
+
+  .legal__body :global(ul li::before) {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 1.45em;
+    width: var(--space-3);
+    height: 1px;
+    background: var(--color-ink-subtle);
+  }
+
+  .legal__body :global(.lede) {
+    font-size: var(--text-lg);
+    color: var(--color-ink-body);
+  }
+
+  .legal__body :global(dl) {
+    margin: 0 0 var(--space-4);
+  }
+
+  .legal__body :global(dt) {
+    font-weight: var(--weight-semi);
+    color: var(--color-ink);
+    margin-top: var(--space-4);
+  }
+
+  .legal__body :global(dd) {
+    margin: 0;
+  }
+
+  /* Same editorial-unfinished signal as the Tbd mark: a draft must look like
+     a draft so it cannot be published by accident. See DESIGN.md §1. */
+  .legal__notice {
+    margin-top: var(--space-16);
+    padding: var(--space-4) var(--space-5);
+    border: 1px dashed var(--color-ink-subtle);
+    border-radius: var(--radius-md);
+    background: var(--color-surface-well);
+    color: var(--color-ink-body);
+    font-size: var(--text-sm);
+    max-width: var(--width-content);
+  }
+</style>

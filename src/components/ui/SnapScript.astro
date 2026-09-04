@@ -51,6 +51,12 @@
     const themeOf = new Map<string, string>();
     sections.forEach((s) => themeOf.set(s.id, s.dataset.sectionTheme ?? 'paper'));
 
+    // One-shot flag: a section is marked the first time it becomes the one
+    // actually in view, so entrance effects (the reviews count-up) can wait
+    // until the visitor is on that section rather than firing when a sliver of
+    // it first peeks in at the bottom of the screen.
+    const seen = new Set<string>();
+
     const setCurrent = (id: string) => {
       for (const [key, dot] of dots) {
         if (key === id) dot.setAttribute('aria-current', 'true');
@@ -62,6 +68,11 @@
          ink over the dark band and disappear. Publishing the active
          section's theme lets fixed overlays follow along. */
       document.documentElement.dataset.activeTheme = themeOf.get(id) ?? 'paper';
+
+      if (!seen.has(id)) {
+        seen.add(id);
+        document.getElementById(id)?.setAttribute('data-seen', '');
+      }
     };
 
     const navObserver = new IntersectionObserver(

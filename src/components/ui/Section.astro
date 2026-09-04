@@ -27,15 +27,33 @@ const s = homeSection(id);
   class="entry snap-section"
   data-section-theme={s.theme}
   data-snap-section
+  data-reveal
+  data-anim="rule-x"
   aria-labelledby={`${s.id}-heading`}
 >
   <div class="container entry__grid">
-    <div class="entry__rail" data-reveal>
-      {s.index && <span class="entry__index" aria-hidden="true">{s.index}</span>}
-      <span class="entry__label">{s.label[lang]}</span>
+    <div class="entry__rail">
+      {s.index && (
+        <span class="entry__index" data-reveal data-anim="roll" aria-hidden="true">
+          {[...s.index].map((ch) => {
+            const d = Number(ch);
+            // Short mod-10 window [d-2, d-1, d, d+1]: the strip always rolls two
+            // places and overshoots one, so a digit ticks like an adding machine
+            // whatever its value. Rest cell is the true digit, so a scriptless
+            // page shows the correct number.
+            const cells = [(d + 8) % 10, (d + 9) % 10, d, (d + 1) % 10];
+            return (
+              <span class="digit">
+                <span class="digit__strip">{cells.map((n) => <span>{n}</span>)}</span>
+              </span>
+            );
+          })}
+        </span>
+      )}
+      <span class="entry__label" data-reveal data-anim="stamp">{s.label[lang]}</span>
     </div>
 
-    <div class="entry__body">
+    <div class="entry__body" data-reveal data-anim="rule-y">
       <h2 id={`${s.id}-heading`} data-reveal style="--reveal-i:1">{s.title?.[lang]}</h2>
       <div data-reveal style="--reveal-i:2">
         <slot />
@@ -46,16 +64,25 @@ const s = homeSection(id);
 
 <style>
   .entry {
-    /* Vertically centred within the viewport block, but only while it fits —
-       `safe` stops a section taller than the screen from centring itself and
-       pushing its own top edge out of reach above the scroll origin. */
+    /* Top-aligned: navigating to a section lands its heading just under the
+       floating header, identically at every zoom level. The top padding is the
+       header clearance — with scroll-padding-top zeroed on the snap page
+       (global.css) it is counted once, for both natural and anchored scroll. */
     display: grid;
-    align-content: safe center;
-    /* Tight, because the height budget is the viewport. Top clears the
-       floating header and no more; every rem spent here is a rem the
-       content cannot use. */
+    align-content: start;
     padding-block: calc(var(--island-height) + var(--space-6)) var(--space-8);
-    border-top: 1px solid var(--color-line);
+    position: relative;
+  }
+
+  /* The section's top rule is a pseudo-element, not a border, so it can be
+     drawn on entry — see the reveal block below. */
+  .entry::before {
+    content: '';
+    position: absolute;
+    inset: 0 0 auto 0;
+    height: 1px;
+    background: var(--color-line);
+    transform-origin: left;
   }
 
   .entry__grid {
@@ -79,6 +106,8 @@ const s = homeSection(id);
     font-variant-numeric: tabular-nums;
     color: var(--color-brand-500);
     letter-spacing: 0.04em;
+    display: inline-flex;
+    line-height: 1;
   }
 
   .entry__label {
@@ -91,10 +120,98 @@ const s = homeSection(id);
     line-height: 1.4;
   }
 
+  /* ── Scroll reveals ────────────────────────────────────────────
+     Three motions, one ledger metaphor: the section rules are drawn, the
+     marginal number rolls in like an adding machine, and the category label
+     lands like a stamp. One-shot (SnapScript adds .is-revealed once),
+     transform/opacity only, and gated behind html[data-js] so a scriptless
+     page shows each already finished. Reduced motion is neutralised globally
+     in global.css. */
+
+  .digit {
+    display: inline-block;
+    height: 1em;
+    overflow: hidden;
+  }
+
+  .digit__strip {
+    display: flex;
+    flex-direction: column;
+    transform: translateY(-2em);
+  }
+
+  .digit__strip > span {
+    display: block;
+    height: 1em;
+    line-height: 1;
+  }
+
+  html[data-js] .entry__index[data-anim='roll']:not(.is-revealed) .digit__strip {
+    transform: translateY(0);
+  }
+
+  html[data-js] .entry__index[data-anim='roll'].is-revealed .digit__strip {
+    transform: translateY(-2em);
+    transition: transform 560ms cubic-bezier(0.2, 1.2, 0.32, 1);
+    transition-delay: 160ms;
+  }
+
+  /* Units tick a beat after the tens. */
+  html[data-js] .entry__index[data-anim='roll'].is-revealed .digit:nth-child(2) .digit__strip {
+    transition-delay: 220ms;
+  }
+
+  /* The category label presses onto the page from slightly larger and askew,
+     dipping under 1× on the way in for the stamp "hit". */
+  html[data-js] .entry__label[data-anim='stamp']:not(.is-revealed) {
+    opacity: 0;
+    transform: scale(1.18) rotate(-1.5deg);
+    transform-origin: left center;
+  }
+
+  html[data-js] .entry__label[data-anim='stamp'].is-revealed {
+    opacity: 1;
+    transform: scale(1) rotate(0deg);
+    transform-origin: left center;
+    transition:
+      opacity 170ms var(--ease-out),
+      transform 260ms cubic-bezier(0.2, 1.3, 0.3, 1);
+    transition-delay: 220ms;
+  }
+
+  /* Ruling the line — both hairlines draw from the margin. */
+  html[data-js] .entry[data-anim='rule-x']:not(.is-revealed)::before {
+    transform: scaleX(0);
+  }
+
+  html[data-js] .entry[data-anim='rule-x'].is-revealed::before {
+    transform: scaleX(1);
+    transition: transform 620ms var(--ease-out);
+  }
+
+  html[data-js] .entry__body[data-anim='rule-y']:not(.is-revealed)::before {
+    transform: scaleY(0);
+  }
+
+  html[data-js] .entry__body[data-anim='rule-y'].is-revealed::before {
+    transform: scaleY(1);
+    transition: transform 720ms var(--ease-out);
+    transition-delay: 90ms;
+  }
+
   .entry__body {
     min-width: 0;
-    border-left: 1px solid var(--color-line);
     padding-left: var(--space-8);
+    position: relative;
+  }
+
+  .entry__body::before {
+    content: '';
+    position: absolute;
+    inset: 0 auto 0 0;
+    width: 1px;
+    background: var(--color-line);
+    transform-origin: top;
   }
 
   .entry__body h2 {
@@ -117,8 +234,11 @@ const s = homeSection(id);
     }
 
     .entry__body {
-      border-left: 0;
       padding-left: 0;
+    }
+
+    .entry__body::before {
+      display: none;
     }
   }
 </style>

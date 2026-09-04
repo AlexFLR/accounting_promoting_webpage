@@ -195,8 +195,8 @@ export const services: Service[] = [
 export const groupLabels: Record<ServiceGroup, Record<Lang, string>> = {
   segment: { ro: 'După forma de organizare', en: 'By company type' },
   recurring: { ro: 'Servicii lunare', en: 'Monthly services' },
-  deliverable: { ro: 'Lucrări anuale', en: 'Annual reports' },
-  compliance: { ro: 'Conformare', en: 'Compliance' },
+  deliverable: { ro: 'Raportări anuale', en: 'Annual reports' },
+  compliance: { ro: 'Conformitate fiscală', en: 'Compliance' },
 };
 
 export const groupOrder: ServiceGroup[] = ['segment', 'recurring', 'deliverable', 'compliance'];

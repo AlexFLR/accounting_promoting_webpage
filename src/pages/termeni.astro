@@ -1,0 +1,98 @@
+---
+import LegalLayout from '@layouts/LegalLayout.astro';
+import Tbd from '@components/ui/Tbd.astro';
+import { site } from '@/data/site';
+import { pathFor } from '@i18n/utils';
+
+const title = 'Termeni și condiții';
+const description =
+  'Termenii de utilizare a site-ului Valvio Contexpert Business SRL și datele de identificare ale firmei.';
+---
+
+<LegalLayout title={title} description={description} updated="2026-08-30">
+  <p class="lede">
+    Acești termeni reglementează utilizarea acestui site. Prin folosirea lui,
+    ești de acord cu ei.
+  </p>
+
+  <h2>Identificarea firmei</h2>
+  <dl>
+    <dt>Denumire</dt>
+    <dd>{site.legalName}</dd>
+    <dt>Formă juridică</dt>
+    <dd>Societate cu răspundere limitată (SRL)</dd>
+    <dt>Sediu social</dt>
+    <dd>{site.address.street}, {site.address.city}, {site.address.region}, {site.address.postalCode}</dd>
+    <dt>CUI / CIF</dt>
+    <dd>{site.registration.cui ? site.registration.cui : <Tbd label="CUI / CIF" />}</dd>
+    <dt>Nr. Registrul Comerțului</dt>
+    <dd>{site.registration.tradeRegister ? site.registration.tradeRegister : <Tbd label="nr. Registrul Comerțului" />}</dd>
+    <dt>Capital social</dt>
+    <dd>{site.registration.shareCapital ? site.registration.shareCapital : <Tbd label="capital social" />}</dd>
+    <dt>Autorizație CECCAR</dt>
+    <dd>{site.registration.ceccar ? site.registration.ceccar : <Tbd label="nr. autorizație CECCAR" />}</dd>
+    <dt>Email</dt>
+    <dd><a href={`mailto:${site.email}`}>{site.email}</a></dd>
+    <dt>Telefon</dt>
+    <dd><a href={site.phoneHref}>{site.phone}</a></dd>
+  </dl>
+
+  <h2>Obiectul site-ului</h2>
+  <p>
+    Acest site prezintă serviciile de contabilitate oferite de {site.name}.
+    Informațiile au caracter general de prezentare și nu constituie o ofertă
+    contractuală fermă. Serviciile se contractează separat, printr-un contract
+    dedicat.
+  </p>
+
+  <h2>Informațiile fiscale</h2>
+  <p>
+    Articolele și explicațiile fiscale de pe site au caracter informativ
+    general, valabil la data publicării. Legislația se schimbă frecvent și
+    fiecare situație este diferită, așa că nu înlocuiesc consultanța
+    personalizată. Nu ne asumăm răspunderea pentru decizii luate exclusiv pe
+    baza informațiilor publicate aici.
+  </p>
+
+  <h2>Proprietate intelectuală</h2>
+  <p>
+    Conținutul site-ului — texte, identitate vizuală, structură — aparține
+    {site.legalName} și nu poate fi reprodus fără acordul nostru.
+  </p>
+
+  <h2>Protecția datelor</h2>
+  <p>
+    Modul în care prelucrăm datele personale este descris în
+    <a href={pathFor('privacy', 'ro')}>politica de confidențialitate</a> și în
+    <a href={pathFor('cookies', 'ro')}>politica de cookie-uri</a>.
+  </p>
+
+  <h2>Soluționarea litigiilor</h2>
+  <p>
+    Dacă ai o nemulțumire, scrie-ne întâi la
+    <a href={`mailto:${site.email}`}>{site.email}</a> și vom încerca să o
+    rezolvăm direct. Te poți adresa și:
+  </p>
+  <ul>
+    <li>
+      Autorității Naționale pentru Protecția Consumatorilor (ANPC),
+      <a href="https://anpc.ro" rel="noopener">anpc.ro</a>;
+    </li>
+    <li>
+      platformei europene de soluționare online a litigiilor (SOL),
+      <a href="https://ec.europa.eu/consumers/odr" rel="noopener">ec.europa.eu/consumers/odr</a>.
+    </li>
+  </ul>
+
+  <h2>Legea aplicabilă</h2>
+  <p>
+    Acestor termeni li se aplică legislația română, iar eventualele litigii sunt
+    de competența instanțelor din România.
+  </p>
+
+  <h2>Modificări</h2>
+  <p>
+    Putem actualiza acești termeni. Versiunea în vigoare este cea publicată pe
+    această pagină, cu data ultimei actualizări indicată mai sus.
+  </p>
+</LegalLayout>

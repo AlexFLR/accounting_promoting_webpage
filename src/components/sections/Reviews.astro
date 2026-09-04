@@ -1,73 +1,137 @@
 ---
 /**
- * Client reviews.
+ * Client reviews — the Google Business Profile, in Google's own card format.
  *
- * Empty on purpose. Inventing testimonials for an accounting firm is both
- * dishonest and, in Romania, actionable — so this renders the structure and
- * waits for real ones. Paste them into `reviews` below.
+ * Real reviews only, copied verbatim from the profile (site.googleProfileUrl).
+ * Inventing testimonials for an accounting firm is both dishonest and, in
+ * Romania, actionable — so nothing here is written, only quoted.
  *
- * Deliberately NO Review / AggregateRating structured data. Google treats
- * reviews hosted by the reviewed business as "self-serving" and makes pages
- * using LocalBusiness or Organization schema ineligible for star rich
- * results — including embedded Google or Facebook widgets, not just
- * hand-written quotes. The stars live on the Business Profile; this links
- * there instead.
+ * Still NO Review / AggregateRating structured data: Google treats reviews
+ * hosted by the reviewed business as "self-serving" and makes pages carrying
+ * that schema ineligible for star rich results. The 5,0 summary below is plain
+ * visible content, not JSON-LD.
  *
- * Laid out as a single ruled column, not a row of testimonial cards: quotes
- * set in the serif, attribution in the margin. Three matching cards is the
- * shape every competitor uses and says nothing about what is in them.
+ * Avatars are self-hosted (src/assets), not hot-linked from googleusercontent:
+ * the site makes zero third-party requests on load, which is the GDPR posture
+ * behind the privacy pages. The amber stars and the four-colour mark are the
+ * one place this component leaves the ledger palette, on purpose — the point
+ * is to read as Google.
  */
 import Section from '@components/ui/Section.astro';
 import Tbd from '@components/ui/Tbd.astro';
+import { Image } from 'astro:assets';
+import { site } from '@/data/site';
 import { getLangFromUrl, useTranslations } from '@i18n/utils';
-
-interface Review {
-  quote: string;
-  author: string;
-  /** Trade and how long they have been a client. */
-  context: string;
-}
-
-/** Real reviews only. Empty until you have them. */
-const reviews: Review[] = [];
+import { reviews, reviewCount, reviewAverage, type Review } from '@/data/reviews';
 
 const lang = getLangFromUrl(Astro.url);
 const t = useTranslations(lang);
+
+const avg = reviewAverage;
+const avgLabel = avg.toLocaleString(lang, { minimumFractionDigits: 1, maximumFractionDigits: 1 });
+// Amber overlay width for the final rating (100% for 5,0). The count-up script
+// animates from 0; without JS this static value stands.
+const avgFillPct = (avg / 5) * 100;
+
+const countLabel =
+  lang === 'en' ? `${reviewCount} reviews on Google` : `${reviewCount} recenzii pe Google`;
+
+const starsLabel = (n: number | string) =>
+  lang === 'en' ? `${n} out of 5 stars` : `${n} din 5 stele`;
+
+const guideLabel = (r: Review) =>
+  r.localGuide
+    ? lang === 'en'
+      ? `Local Guide · ${r.localGuide} reviews`
+      : `Local Guide · ${r.localGuide} recenzii`
+    : '';
+
+const dateLabel = (iso: string) =>
+  new Date(iso).toLocaleDateString(lang, { month: 'long', year: 'numeric' });
 ---
 
 <Section section="referinte">
+  {/* One sprite, referenced by every star and mark below via <use>. */}
+  <svg class="sprite" aria-hidden="true" focusable="false">
+    <symbol id="rev-star" viewBox="0 0 24 24">
+      <path d="M12 17.27L18.18 21l-1.64-7.03L22 9.24l-7.19-.61L12 2 9.19 8.63 2 9.24l5.46 4.73L5.82 21z" />
+    </symbol>
+    <symbol id="rev-g" viewBox="0 0 48 48">
+      <path fill="#EA4335" d="M24 9.5c3.54 0 6.71 1.22 9.21 3.6l6.85-6.85C35.9 2.38 30.47 0 24 0 14.62 0 6.51 5.38 2.56 13.22l7.98 6.19C12.43 13.72 17.74 9.5 24 9.5z" />
+      <path fill="#4285F4" d="M46.98 24.55c0-1.57-.15-3.09-.38-4.55H24v9.02h12.94c-.58 2.96-2.26 5.48-4.78 7.18l7.73 6c4.51-4.18 7.09-10.36 7.09-17.65z" />
+      <path fill="#FBBC05" d="M10.53 28.59c-.48-1.45-.76-2.99-.76-4.59s.27-3.14.76-4.59l-7.98-6.19C.92 16.46 0 20.12 0 24c0 3.88.92 7.54 2.56 10.78l7.97-6.19z" />
+      <path fill="#34A853" d="M24 48c6.48 0 11.93-2.13 15.89-5.81l-7.73-6c-2.15 1.45-4.92 2.3-8.16 2.3-6.26 0-11.57-4.22-13.47-9.91l-7.98 6.19C6.51 42.62 14.62 48 24 48z" />
+    </symbol>
+  </svg>
+
   <p class="intro">{t('home.reviewsIntro')}</p>
 
   {
     reviews.length > 0 ? (
-      <div class="reg">
-        {reviews.map((r, i) => (
-          <figure class="reg__row quote">
-            <figcaption class="reg__ref">{String(i + 1).padStart(2, '0')}</figcaption>
-            <div class="reg__main">
-              <blockquote>{r.quote}</blockquote>
-              <p class="quote__by">
-                <span class="quote__author">{r.author}</span>
-                <span class="reg__note">{r.context}</span>
-              </p>
-            </div>
-          </figure>
-        ))}
-      </div>
+      <>
+        <div class="rev-summary" data-countup data-countup-to={avg} data-countup-decimals="1" data-countup-fill style={`--countup-fill:${avgFillPct}%`}>
+          <svg class="rev-glogo" viewBox="0 0 48 48" aria-hidden="true">
+            <use href="#rev-g" />
+          </svg>
+          {/* Counts up on arrival (script below). The stars' aria-label carries
+              the real value, so the animated number is aria-hidden. */}
+          <span class="rev-summary__score" data-countup-num aria-hidden="true">{avgLabel}</span>
+          {/* Faint track + an amber copy clipped to --rev-fill; the script
+              sweeps the fill in step with the number. */}
+          <span class="stars stars--summary" role="img" aria-label={starsLabel(avgLabel)}>
+            <span class="stars__row stars__row--track" aria-hidden="true">
+              {Array.from({ length: 5 }).map(() => (
+                <svg class="star"><use href="#rev-star" /></svg>
+              ))}
+            </span>
+            <span class="stars__row stars__row--fill" aria-hidden="true">
+              {Array.from({ length: 5 }).map(() => (
+                <svg class="star"><use href="#rev-star" /></svg>
+              ))}
+            </span>
+          </span>
+          <span class="rev-summary__count">{countLabel}</span>
+        </div>
+
+        <div class="rev-list">
+          {reviews.map((r) => (
+            <article class="rev-card">
+              <header class="rev-card__head">
+                <Image class="rev-card__avatar" src={r.photo} alt="" width={80} height={80} />
+                <div class="rev-card__id">
+                  <span class="rev-card__name">{r.author}</span>
+                  {guideLabel(r) && <span class="rev-card__guide">{guideLabel(r)}</span>}
+                </div>
+                <svg class="rev-card__glogo" viewBox="0 0 48 48" aria-hidden="true">
+                  <use href="#rev-g" />
+                </svg>
+              </header>
+
+              <div class="rev-card__meta">
+                <span class="stars stars--sm" role="img" aria-label={starsLabel(r.rating)}>
+                  {Array.from({ length: 5 }).map((_, i) => (
+                    <svg class:list={['star', { 'is-on': i < r.rating }]} aria-hidden="true">
+                      <use href="#rev-star" />
+                    </svg>
+                  ))}
+                </span>
+                <span class="rev-card__date">{dateLabel(r.date)}</span>
+              </div>
+
+              <p class="rev-card__text">{r.quote}</p>
+            </article>
+          ))}
+        </div>
+      </>
     ) : (
       <p class="empty">
         <Tbd label="3–4 recenzii reale, copiate din profilul Google" />
-        <span class="empty__hint">
-          Se adaugă în lista <code>reviews</code> din
-          <code>src/components/sections/Reviews.astro</code>.
-        </span>
       </p>
     )
   }
 
   <p class="after">
-    <a href="#">{t('home.reviewsLink')}</a>
-    <Tbd label="link profil Google Business" />
+    <a href={site.googleProfileUrl} target="_blank" rel="noopener">{t('home.reviewsLink')}</a>
   </p>
 </Section>
 
@@ -75,55 +139,170 @@ const t = useTranslations(lang);
   .intro {
     max-width: 54ch;
     color: var(--color-ink-body);
-    margin-bottom: var(--space-8);
+    margin-bottom: var(--space-6);
   }
 
-  /* The one voice on the page that is not ours — the change of face says so
-     without a decorative quotation mark. */
-  blockquote {
-    margin: 0;
-    font-family: var(--font-serif);
-    font-size: var(--text-lg);
-    color: var(--color-ink);
+  .sprite {
+    position: absolute;
+    width: 0;
+    height: 0;
+    overflow: hidden;
   }
 
-  .quote__by {
-    margin-top: var(--space-3);
-    display: grid;
-    gap: var(--space-1);
-  }
-
-  .quote__author {
-    font-size: var(--text-sm);
-    font-weight: var(--weight-semi);
-  }
-
-  .empty {
-    display: grid;
-    gap: var(--space-2);
-    justify-items: start;
-    padding: var(--space-5) 0;
-    border-top: 2px solid var(--color-ink);
-    border-bottom: 1px solid var(--color-line);
-  }
-
-  .empty__hint {
-    font-size: var(--text-sm);
-    color: var(--color-ink-muted);
-  }
-
-  .empty__hint code {
-    background: var(--color-surface-well);
-    padding: 0 0.3em;
-    border-radius: var(--radius-sm);
-  }
-
-  .after {
-    margin-top: var(--space-6);
+  /* ── Google review styling ────────────────────────────────────────────
+     Amber stars and the four-colour mark are the one place this component
+     leaves the ledger palette, on purpose: the point is to read as Google.
+     Scoped here, never tokenised. The cards use the section's own ink theme so
+     they sit on the navy band instead of fighting it. */
+  .rev-summary {
     display: flex;
     align-items: center;
     gap: var(--space-3);
     flex-wrap: wrap;
+    margin-bottom: var(--space-6);
+  }
+
+  .rev-glogo {
+    width: 1.4rem;
+    height: 1.4rem;
+    flex: none;
+  }
+
+  .rev-summary__score {
+    font-family: var(--font-display);
+    font-size: var(--text-2xl);
+    line-height: 1;
+    color: var(--color-ink);
+    /* Steady width while the tenths digit spins during the count-up. */
+    font-variant-numeric: tabular-nums;
+  }
+
+  .rev-summary__count {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .stars {
+    display: inline-flex;
+    gap: 0.08em;
+    flex: none;
+  }
+
+  .star {
+    width: 1.1rem;
+    height: 1.1rem;
+    fill: rgba(255, 255, 255, 0.22);
+  }
+
+  .star.is-on {
+    fill: #fbbc04; /* Google review amber */
+  }
+
+  /* Summary rating: a faint track with an amber copy clipped to --rev-fill,
+     which the count-up script sweeps 0 → 100% in step with the number. */
+  .stars--summary {
+    position: relative;
+  }
+
+  .stars__row {
+    display: inline-flex;
+    gap: 0.08em;
+  }
+
+  .stars__row--fill {
+    position: absolute;
+    inset: 0;
+    clip-path: inset(0 calc(100% - var(--countup-fill, 100%)) 0 0);
+  }
+
+  .stars__row--fill .star {
+    fill: #fbbc04; /* Google review amber */
+  }
+
+  .stars--sm .star {
+    width: 0.9rem;
+    height: 0.9rem;
+  }
+
+  .rev-list {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(min(100%, 16rem), 1fr));
+    gap: var(--space-4);
+  }
+
+  .rev-card {
+    align-self: start;
+    display: grid;
+    gap: var(--space-3);
+    padding: var(--space-5);
+    background: var(--color-surface-well);
+    border: 1px solid var(--color-line);
+    border-radius: var(--radius-md);
+  }
+
+  .rev-card__head {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr) auto;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .rev-card__avatar {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+    object-fit: cover;
+  }
+
+  .rev-card__id {
+    min-width: 0;
+    display: grid;
+    gap: 0.1rem;
+  }
+
+  .rev-card__name {
+    font-weight: var(--weight-semi);
+    color: var(--color-ink);
+  }
+
+  .rev-card__guide {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .rev-card__glogo {
+    width: 1.1rem;
+    height: 1.1rem;
+    align-self: start;
+    flex: none;
+  }
+
+  .rev-card__meta {
+    display: flex;
+    align-items: center;
+    gap: var(--space-3);
+  }
+
+  .rev-card__date {
+    font-size: var(--text-sm);
+    color: var(--color-ink-muted);
+  }
+
+  .rev-card__text {
+    color: var(--color-ink-body);
+    line-height: var(--leading-body);
+  }
+
+  .empty {
+    padding: var(--space-5) 0;
+  }
+
+  .after {
+    margin-top: var(--space-6);
     font-size: var(--text-sm);
   }
 </style>
+
+<script>
+  import '../../scripts/countup';
+</script>
